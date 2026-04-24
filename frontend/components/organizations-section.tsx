@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Building2, ExternalLink, X, Users, Search, ChevronDown } from "lucide-react"
+import { Building2, ExternalLink, X, Users, Search, ChevronDown, Info } from "lucide-react"
 
 export type Org = {
   login: string
@@ -101,11 +101,19 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
           <div className="w-12 h-12 rounded-xl glass-strong border border-white/10 flex items-center justify-center mx-auto mb-4">
             <Building2 className="w-6 h-6 text-coral/80" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
-            Organizations in the Top 500
-          </h2>
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+              Organizations in the Top 500
+            </h2>
+            <div className="relative group">
+              <Info className="w-5 h-5 text-white/30 hover:text-white/60 transition cursor-help" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 rounded-lg glass-strong border border-white/10 text-xs text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+                Only public GitHub organizations with publicly listed members are shown. We fetch member lists via the GitHub API for a curated set of orgs. Private members and orgs not in our list are not included.
+              </div>
+            </div>
+          </div>
           <p className="text-white/50 max-w-xl mx-auto text-sm">
-            {orgs.length} organisation accounts ranked by followers.{" "}
+            {orgs.length} organisation accounts with public member data.{" "}
             {hasOrgData && (
               <span className="text-coral">
                 Click any org to see gender diversity among their public members.
