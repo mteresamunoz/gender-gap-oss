@@ -33,9 +33,12 @@ export default function HomePage() {
   const orgs = allOrgs.filter((o) =>
     orgStats.some((s) => s.org_login.toLowerCase() === o.login.toLowerCase())
   )
-  // Use per-country top 100 data if available, fallback to global top 500
+  // Use per-country top 100 data only when we have substantial coverage (≥10 countries),
+  // otherwise fallback to global top 500 users filtered by country.
   const perCountryUsers = getUsersByCountry()
-  const usersByCountry = perCountryUsers.length > 0 ? perCountryUsers : getUsersWithCountry()
+  const distinctPerCountry = new Set(perCountryUsers.map((u) => u.country)).size
+  const isPerCountryData = distinctPerCountry >= 10
+  const usersByCountry = isPerCountryData ? perCountryUsers : getUsersWithCountry()
   const orgMembers = getAllOrgMembers()
   const classifiedCount = stats.female + stats.male
 
@@ -79,7 +82,7 @@ export default function HomePage() {
 
       <CategoryBreakdown />
 
-      <WorldMapSection users={usersByCountry} />
+      <WorldMapSection users={usersByCountry} isPerCountryData={isPerCountryData} />
 
       <OrganizationsSection
         orgs={orgs}

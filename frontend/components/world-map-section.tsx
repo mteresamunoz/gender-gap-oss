@@ -20,6 +20,7 @@ export type UserWithCountry = {
 
 interface WorldMapSectionProps {
   users: UserWithCountry[]
+  isPerCountryData?: boolean
 }
 
 function fmtFollowers(n: number): string {
@@ -32,7 +33,7 @@ const COUNTRY_NAME_MAP: Record<string, string> = {
   "United States": "United States of America",
 }
 
-export function WorldMapSection({ users }: WorldMapSectionProps) {
+export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const [worldData, setWorldData] = useState<Topology | null>(null)
@@ -215,7 +216,7 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
             <div className="relative group">
               <Info className="w-5 h-5 text-white/30 hover:text-white/60 transition cursor-help" />
               <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 p-3 rounded-lg glass-strong border border-white/10 text-xs text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-                Only users who have a location set on their GitHub profile are shown. Countries are colored based on the gender breakdown of those users within our top 500 sample.
+                Only users who have a location set on their GitHub profile are shown. Countries are colored based on the gender breakdown of those users{isPerCountryData ? ' in our per-country top 100 sample' : ' within our top 500 sample'}.
               </div>
             </div>
           </div>
@@ -223,9 +224,15 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
             Drag to rotate the globe. Click a country to explore.
             <span className="text-coral"> Coral</span> = has women · <span className="text-teal">Teal</span> = only men.
           </p>
-          <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
-            Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
-          </p>
+          {!isPerCountryData ? (
+            <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
+              Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
+            </p>
+          ) : (
+            <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
+              Showing top 100 users per country by followers. <span className="text-teal">Data collected via GitHub API.</span>
+            </p>
+          )}
         </motion.div>
 
         <div
@@ -289,7 +296,7 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
                       <div>
                         <h3 className="text-2xl font-serif text-foreground">{selectedCountry}</h3>
                         <p className="text-sm text-white/50 mt-1">
-                          {total} users from top 500 with location set
+                          {total} users from {isPerCountryData ? 'top 100 in this country' : 'top 500 with location set'}
                         </p>
                       </div>
                       <button onClick={() => setSelectedCountry(null)} className="p-2 rounded-full hover:bg-white/10 transition">
