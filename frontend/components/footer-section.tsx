@@ -36,12 +36,9 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
           <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground mb-12">
             <div>
               <span className="block text-xs uppercase tracking-widest mb-1">Data Updated</span>
-              <span className="text-foreground">{displayDate}</span>
+              <span className="text-foreground">{displayDate ? new Date(displayDate).getFullYear() : now.getFullYear()}</span>
             </div>
-            <div>
-              <span className="block text-xs uppercase tracking-widest mb-1">Profiles Analyzed</span>
-              <span className="text-foreground">{totalAnalyzed ?? "—"}</span>
-            </div>
+
             <div>
               <span className="block text-xs uppercase tracking-widest mb-1">Platforms</span>
               <span className="text-foreground">GitHub, Hugging Face</span>
