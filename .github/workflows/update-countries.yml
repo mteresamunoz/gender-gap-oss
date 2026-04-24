@@ -1,0 +1,39 @@
+name: Update country data
+
+on:
+  schedule:
+    - cron: '0 6 * * *'    # daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-country:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r data/requirements.txt
+
+      - name: Fetch one country (rotating)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: python data/scripts/fetch_github_by_country.py --daily
+
+      - name: Infer gender
+        run: python data/scripts/infer_gender.py
+
+      - name: Seed database
+        run: python data/scripts/seed_database.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || \
+            git commit -m "data: country update $(date +'%Y-%m-%d')"
+          git push

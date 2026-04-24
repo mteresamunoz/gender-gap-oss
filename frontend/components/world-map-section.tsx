@@ -6,7 +6,7 @@ import * as d3 from "d3"
 import { geoOrthographic, geoPath } from "d3-geo"
 import { feature } from "topojson-client"
 import type { Topology, GeometryCollection } from "topojson-specification"
-import { MapPin, X, ExternalLink } from "lucide-react"
+import { MapPin, X, ExternalLink, Info } from "lucide-react"
 
 export type UserWithCountry = {
   login: string
@@ -208,12 +208,23 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
           <div className="w-12 h-12 rounded-xl glass-strong border border-white/10 flex items-center justify-center mx-auto mb-4">
             <MapPin className="w-6 h-6 text-coral/80" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-3">
-            By Country
-          </h2>
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+              By Country
+            </h2>
+            <div className="relative group">
+              <Info className="w-5 h-5 text-white/30 hover:text-white/60 transition cursor-help" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 p-3 rounded-lg glass-strong border border-white/10 text-xs text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+                Only users who have a location set on their GitHub profile are shown. Countries are colored based on the gender breakdown of those users within our top 500 sample.
+              </div>
+            </div>
+          </div>
           <p className="text-sm text-white/50 max-w-lg mx-auto">
-            Drag to rotate the globe. Click a country to see women in the top GitHub users from that region.
-            Coral = has women · Teal = only men. Data shows top 100 GitHub users per country.
+            Drag to rotate the globe. Click a country to explore.
+            <span className="text-coral"> Coral</span> = has women · <span className="text-teal">Teal</span> = only men.
+          </p>
+          <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
+            Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
           </p>
         </motion.div>
 
@@ -278,7 +289,7 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
                       <div>
                         <h3 className="text-2xl font-serif text-foreground">{selectedCountry}</h3>
                         <p className="text-sm text-white/50 mt-1">
-                          Top {total} GitHub users from this country
+                          {total} users from top 500 with location set
                         </p>
                       </div>
                       <button onClick={() => setSelectedCountry(null)} className="p-2 rounded-full hover:bg-white/10 transition">
