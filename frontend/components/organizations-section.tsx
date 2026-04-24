@@ -279,34 +279,38 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
 
               {(() => {
                 const stat = statsByOrg[selectedOrg.toLowerCase()]
-                const totalClassified = stat.female + stat.male
-                const womenPct = totalClassified > 0 ? Math.round((stat.female / totalClassified) * 100) : 0
-                const menPct = totalClassified > 0 ? Math.round((stat.male / totalClassified) * 100) : 0
+                const womenPct = Math.round(stat.female_pct)
+                const menPct = Math.round(stat.male_pct)
+                const unclassPct = Math.round(stat.unclassified_pct)
 
                 return (
                   <>
                     {/* Stats cards */}
-                    <div className="grid grid-cols-4 gap-3 mb-6">
+                    <div className="grid grid-cols-5 gap-3 mb-6">
                       <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                         <span className="block text-lg font-bold text-foreground">{stat.total_members}</span>
-                        <span className="text-[10px] text-white/40">members</span>
+                        <span className="text-[10px] text-white/40">total</span>
                       </div>
                       <div className="rounded-xl bg-coral/10 p-3 text-center">
                         <span className="block text-lg font-bold text-coral">{stat.female}</span>
-                        <span className="text-[10px] text-coral/70">women</span>
+                        <span className="text-[10px] text-coral/70">{womenPct}%</span>
                       </div>
                       <div className="rounded-xl bg-teal/10 p-3 text-center">
                         <span className="block text-lg font-bold text-teal">{stat.male}</span>
-                        <span className="text-[10px] text-teal/70">men</span>
+                        <span className="text-[10px] text-teal/70">{menPct}%</span>
+                      </div>
+                      <div className="rounded-xl bg-white/[0.03] p-3 text-center">
+                        <span className="block text-lg font-bold text-foreground">{stat.unclassified}</span>
+                        <span className="text-[10px] text-white/40">{unclassPct}%</span>
                       </div>
                       <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                         <span className="block text-lg font-bold text-foreground">{stat.female_pct}%</span>
-                        <span className="text-[10px] text-white/40">of classified</span>
+                        <span className="text-[10px] text-white/40">women</span>
                       </div>
                     </div>
 
                     {/* Donut */}
-                    {totalClassified > 0 && (
+                    {stat.total_members > 0 && (
                       <div className="flex items-center justify-center gap-6 mb-6">
                         <div className="relative w-24 h-24">
                           <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
@@ -331,6 +335,14 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                               strokeDasharray={`${menPct}, 100`}
                               strokeDashoffset={`-${womenPct}`}
                             />
+                            <path
+                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="rgba(255,255,255,0.2)"
+                              strokeWidth="3"
+                              strokeDasharray={`${unclassPct}, 100`}
+                              strokeDashoffset={`-${womenPct + menPct}`}
+                            />
                           </svg>
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-xs font-bold text-foreground">
@@ -341,16 +353,16 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm">
                             <div className="w-3 h-3 rounded bg-coral" />
-                            <span className="text-white/70">Women: {stat.female}</span>
+                            <span className="text-white/70">Women: {stat.female} ({womenPct}%)</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm">
                             <div className="w-3 h-3 rounded bg-teal" />
-                            <span className="text-white/70">Men: {stat.male}</span>
+                            <span className="text-white/70">Men: {stat.male} ({menPct}%)</span>
                           </div>
-                          {stat.total_members - totalClassified > 0 && (
+                          {stat.unclassified > 0 && (
                             <div className="flex items-center gap-2 text-sm">
                               <div className="w-3 h-3 rounded bg-white/20" />
-                              <span className="text-white/40">Unknown: {stat.total_members - totalClassified}</span>
+                              <span className="text-white/40">Unknown: {stat.unclassified} ({unclassPct}%)</span>
                             </div>
                           )}
                         </div>

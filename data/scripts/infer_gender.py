@@ -115,6 +115,7 @@ OVERRIDES = {
     "donnemartin": ("male", 1.0, "high"),        # Donne Martin (male)
     "knadh": ("male", 1.0, "high"),               # Kailash Nadh (male)
     "premchapagain": ("male", 1.0, "high"),       # Prem Chapagain (male)
+    "zdaxie": ("male", 0.82, "medium"),           # Zhenda Xie (male)
 }
 
 

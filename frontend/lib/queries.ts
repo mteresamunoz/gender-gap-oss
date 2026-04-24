@@ -342,7 +342,10 @@ export type OrgStat = {
   total_members: number
   female: number
   male: number
+  unclassified: number
   female_pct: number
+  male_pct: number
+  unclassified_pct: number
   has_data: boolean
 }
 
@@ -357,11 +360,22 @@ export function getOrgStats(): OrgStat[] {
           COUNT(*) AS total_members,
           SUM(CASE WHEN gender = 'female' THEN 1 ELSE 0 END) AS female,
           SUM(CASE WHEN gender = 'male' THEN 1 ELSE 0 END) AS male,
+          SUM(CASE WHEN gender IS NULL THEN 1 ELSE 0 END) AS unclassified,
           ROUND(
             100.0 * SUM(CASE WHEN gender = 'female' THEN 1 ELSE 0 END)
-                  / NULLIF(SUM(CASE WHEN gender IN ('male','female') THEN 1 ELSE 0 END), 0),
+                  / NULLIF(COUNT(*), 0),
             1
-          ) AS female_pct
+          ) AS female_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN gender = 'male' THEN 1 ELSE 0 END)
+                  / NULLIF(COUNT(*), 0),
+            1
+          ) AS male_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN gender IS NULL THEN 1 ELSE 0 END)
+                  / NULLIF(COUNT(*), 0),
+            1
+          ) AS unclassified_pct
         FROM org_members
         GROUP BY org_login
         ORDER BY total_members DESC
