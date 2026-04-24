@@ -136,6 +136,32 @@ def setup_schema(conn):
         CREATE INDEX IF NOT EXISTS idx_org_members_org ON org_members(org_login);
         CREATE INDEX IF NOT EXISTS idx_org_members_gender ON org_members(gender);
     """)
+    -- Per-country top 100 dataset (Phase 2).
+    -- Separate table: different question, different sample.
+    CREATE TABLE IF NOT EXISTS github_users_by_country (
+        login TEXT UNIQUE NOT NULL,
+        name TEXT,
+        first_name_used TEXT,
+        followers INTEGER NOT NULL,
+        public_repos INTEGER,
+        company TEXT,
+        location TEXT,
+        country TEXT,
+        country_scope TEXT NOT NULL,  -- the country this user is top for
+        account_created_year INTEGER,
+        avatar_url TEXT,
+        top_language TEXT,
+        gender TEXT,
+        gender_probability REAL,
+        gender_confidence TEXT,
+        bio TEXT,
+        last_updated TEXT NOT NULL,
+        snapshot_date TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_gu_country_scope ON github_users_by_country(country_scope);
+    CREATE INDEX IF NOT EXISTS idx_gu_country ON github_users_by_country(country);
+    """)
+
     # Migrate: add bio column if missing (introduced after initial schema)
     _add_column_if_missing(conn, "github_users", "bio", "TEXT")
     _add_column_if_missing(conn, "contributors", "bio", "TEXT")

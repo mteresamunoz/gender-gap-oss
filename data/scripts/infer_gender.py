@@ -149,6 +149,13 @@ JOBS = [
         "login_field": "login",
         "country_field": "country",
     },
+    {
+        "input": os.path.join(os.path.dirname(__file__), "..", "raw", "github_users_by_country.json"),
+        "output": os.path.join(os.path.dirname(__file__), "..", "processed", "github_users_by_country.json"),
+        "name_field": "name",
+        "login_field": "login",
+        "country_field": "country",
+    },
 ]
 
 # Map country names from our data to gender-guesser country codes.

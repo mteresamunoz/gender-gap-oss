@@ -20,22 +20,20 @@ jobs:
 
       - name: Fetch GitHub top 500
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python data/scripts/fetch_github.py
 
       - name: Fetch curated AI repo contributors
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python data/scripts/fetch_repo_contributors.py
 
       - name: Infer gender
-        env:
-      
         run: python data/scripts/infer_gender.py
 
       - name: Fetch yearly contributions
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python data/scripts/fetch_yearly_contributions.py
 
       - name: Seed database

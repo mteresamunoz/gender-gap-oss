@@ -290,6 +290,31 @@ export type UserWithCountry = {
   top_language: string | null
 }
 
+/** Per-country top 100 data for the interactive map. */
+export function getUsersByCountry(): UserWithCountry[] {
+  try {
+    return db()
+      .prepare(
+        `
+        SELECT
+          login,
+          name,
+          avatar_url,
+          followers,
+          country_scope AS country,
+          gender,
+          top_language
+        FROM github_users_by_country
+        ORDER BY country_scope, followers DESC
+        `,
+      )
+      .all() as UserWithCountry[]
+  } catch {
+    // Table may not exist until fetch_github_by_country.py has run.
+    return []
+  }
+}
+
 /** All users with a known country, for the interactive map. */
 export function getUsersWithCountry(): UserWithCountry[] {
   return db()

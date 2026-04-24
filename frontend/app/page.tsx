@@ -14,8 +14,8 @@ import {
   getWomenTopUsers,
   getOrganizations,
   getUsersWithCountry,
+  getUsersByCountry,
   getOrgStats,
-
   getTimelineByYear,
   getContributorTimeline,
   getAllOrgMembers,
@@ -28,7 +28,9 @@ export default function HomePage() {
   const stats = getOverallStats()
   const women = getWomenTopUsers()
   const orgs = getOrganizations()
-  const usersByCountry = getUsersWithCountry()
+  // Use per-country top 100 data if available, fallback to global top 500
+  const perCountryUsers = getUsersByCountry()
+  const usersByCountry = perCountryUsers.length > 0 ? perCountryUsers : getUsersWithCountry()
   const orgStats = getOrgStats()
   const orgMembers = getAllOrgMembers()
   const classifiedCount = stats.female + stats.male

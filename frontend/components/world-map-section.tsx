@@ -141,25 +141,10 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
         ([, v]) => v === featureName
       )?.[0] || featureName
       const data = byCountry[ourName]
-      if (!data) return "rgba(255,255,255,0.04)"
-
-      const classified = data.all.filter((u) => u.gender === "female" || u.gender === "male")
-      const femaleCount = data.women.length
-      const maleCount = classified.length - femaleCount
-
-      if (femaleCount === 0 && maleCount === 0) return "rgba(255,255,255,0.06)"
-
-      // Only men -> teal
-      if (femaleCount === 0) return "rgba(75,191,160,0.45)"
-
-      // Mix based on female percentage among classified users
-      const femalePct = femaleCount / classified.length
-      // Interpolate between teal (0% women) and coral (100% women)
-      // teal: rgb(75, 191, 160), coral: rgb(249, 123, 107)
-      const r = Math.round(75 + (249 - 75) * femalePct)
-      const g = Math.round(191 + (123 - 191) * femalePct)
-      const b = Math.round(160 + (107 - 160) * femalePct)
-      return `rgba(${r},${g},${b},0.55)`
+      if (!data) return "rgba(255,255,255,0.03)"
+      if (data.women.length > 0) return "rgba(255,107,107,0.5)"
+      if (data.all.some((u) => u.gender === "male")) return "rgba(75,191,160,0.45)"
+      return "rgba(255,255,255,0.03)"
     }
 
     svg.selectAll("path.country")
@@ -228,7 +213,7 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
           </h2>
           <p className="text-sm text-white/50 max-w-lg mx-auto">
             Drag to rotate the globe. Click a country to see women in the top GitHub users from that region.
-            Color intensity reflects the gender mix.
+            Coral = has women · Teal = only men. Data shows top 100 GitHub users per country.
           </p>
         </motion.div>
 
@@ -243,21 +228,17 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
           <svg ref={svgRef} className="w-full" style={{ minHeight: 500 }} />
         </div>
 
-        <div className="flex items-center justify-center gap-4 mt-4 text-xs text-white/40 flex-wrap">
+        <div className="flex items-center justify-center gap-6 mt-4 text-xs text-white/40">
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(249,123,107,0.55)" }} />
-            More women
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(162,157,134,0.55)" }} />
-            Balanced
+            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,107,107,0.5)" }} />
+            Has women
           </span>
           <span className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(75,191,160,0.45)" }} />
             Only men
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.04)" }} />
+            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.03)" }} />
             No data
           </span>
         </div>
@@ -282,54 +263,86 @@ export function WorldMapSection({ users }: WorldMapSectionProps) {
               className="relative z-10 glass-strong rounded-3xl p-6 md:p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-coral/20"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h3 className="text-2xl font-serif text-foreground">{selectedCountry}</h3>
-                  <p className="text-sm text-white/50 mt-1">
-                    {selectedData.all.length} people in our sample ·{" "}
-                    <span className="text-coral font-medium">{selectedData.women.length} women</span>
-                  </p>
-                </div>
-                <button onClick={() => setSelectedCountry(null)} className="p-2 rounded-full hover:bg-white/10 transition">
-                  <X className="w-5 h-5 text-white/60" />
-                </button>
-              </div>
+              {(() => {
+                const total = selectedData.all.length
+                const women = selectedData.women.length
+                const men = selectedData.all.filter((u) => u.gender === "male").length
+                const unclass = total - women - men
+                const classified = women + men
+                const womenPct = classified > 0 ? Math.round((women / classified) * 100) : 0
+                const menPct = classified > 0 ? Math.round((men / classified) * 100) : 0
 
-              {selectedData.women.length === 0 ? (
-                <div className="text-center py-12 text-white/40">
-                  <p className="text-lg mb-2">No women identified in this sample.</p>
-                  <p className="text-sm">This does not mean there are none.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {selectedData.women.map((user) => (
-                    <a
-                      key={user.login}
-                      href={`https://github.com/${user.login}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 rounded-xl p-4 border border-coral/20 bg-coral/[0.03] hover:bg-coral/[0.07] transition group"
-                    >
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.login} className="w-14 h-14 rounded-full object-cover ring-2 ring-coral/30" loading="lazy" />
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-coral/10 ring-2 ring-coral/30" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium text-foreground truncate">{user.name || user.login}</span>
-                          <ExternalLink className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition shrink-0" />
-                        </div>
-                        <span className="text-sm text-coral">@{user.login}</span>
-                        <div className="flex items-center gap-2 mt-1 text-xs text-white/40">
-                          <span>{fmtFollowers(user.followers)} followers</span>
-                          {user.top_language && <><span>·</span><span>{user.top_language}</span></>}
-                        </div>
+                return (
+                  <>
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-2xl font-serif text-foreground">{selectedCountry}</h3>
+                        <p className="text-sm text-white/50 mt-1">
+                          Top {total} GitHub users from this country
+                        </p>
                       </div>
-                    </a>
-                  ))}
-                </div>
-              )}
+                      <button onClick={() => setSelectedCountry(null)} className="p-2 rounded-full hover:bg-white/10 transition">
+                        <X className="w-5 h-5 text-white/60" />
+                      </button>
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="rounded-xl bg-coral/10 p-3 text-center">
+                        <span className="block text-lg font-bold text-coral">{women}</span>
+                        <span className="text-[10px] text-coral/70">women ({womenPct}%)</span>
+                      </div>
+                      <div className="rounded-xl bg-teal/10 p-3 text-center">
+                        <span className="block text-lg font-bold text-teal">{men}</span>
+                        <span className="text-[10px] text-teal/70">men ({menPct}%)</span>
+                      </div>
+                      <div className="rounded-xl bg-white/[0.03] p-3 text-center">
+                        <span className="block text-lg font-bold text-foreground">{unclass}</span>
+                        <span className="text-[10px] text-white/40">unclassified</span>
+                      </div>
+                    </div>
+
+                    {women === 0 ? (
+                      <div className="text-center py-8 text-white/40">
+                        <p className="text-lg mb-2">No women identified in this sample.</p>
+                        <p className="text-sm">This does not mean there are none.</p>
+                      </div>
+                    ) : (
+                      <>
+                        <h4 className="text-sm font-medium text-coral mb-3">Women ({women})</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                          {selectedData.women.map((user) => (
+                            <a
+                              key={user.login}
+                              href={`https://github.com/${user.login}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 rounded-xl p-3 border border-coral/20 bg-coral/[0.03] hover:bg-coral/[0.07] transition group"
+                            >
+                              {user.avatar_url ? (
+                                <img src={user.avatar_url} alt={user.login} className="w-10 h-10 rounded-full object-cover ring-2 ring-coral/30" loading="lazy" />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-coral/10 ring-2 ring-coral/30" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1">
+                                  <span className="font-medium text-foreground text-sm truncate">{user.name || user.login}</span>
+                                  <ExternalLink className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition shrink-0" />
+                                </div>
+                                <span className="text-xs text-coral">@{user.login}</span>
+                                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-white/40">
+                                  <span>{fmtFollowers(user.followers)} followers</span>
+                                  {user.top_language && <><span>·</span><span>{user.top_language}</span></>}
+                                </div>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )
+              })()}
             </motion.div>
           </motion.div>
         )}

@@ -19,13 +19,11 @@ jobs:
         run: pip install -r data/requirements.txt
 
       - name: Infer gender (resume from cache)
-        env:
-      
-        run: python data/scripts/infer_gender.py
+        run: python scripts/infer_gender.py
 
       - name: Fetch yearly contributions (resume)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python data/scripts/fetch_yearly_contributions.py
 
       - name: Seed database
