@@ -70,6 +70,15 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
             >
               @mteresamunoz
             </a>
+            {" · "}
+            <a
+              href="https://github.com/mteresamunoz/gender-gap-oss/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2"
+            >
+              Report an issue
+            </a>
           </p>
         </div>
       </div>
