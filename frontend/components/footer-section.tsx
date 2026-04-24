@@ -73,10 +73,6 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
             >
               @mteresamunoz
             </a>
-            {" "}with Next.js, Tailwind CSS, and Framer Motion.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Gender inference via an offline name dictionary (gender-guesser). Data stored in SQLite. Updated monthly via GitHub Actions.
           </p>
         </div>
       </div>
