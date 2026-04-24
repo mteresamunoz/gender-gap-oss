@@ -2,8 +2,11 @@ name: Update gender gap data
 
 on:
   schedule:
-    - cron: '0 6 1 * *'    # 1st of every month, 06:00 UTC
+    - cron: '0 6 1 * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -44,6 +47,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add data/
-          git diff --staged --quiet || \
-            git commit -m "data: update $(date +'%Y-%m-%d')"
+          git diff --staged --quiet || git commit -m "data: update $(date +'%Y-%m-%d')"
           git push
