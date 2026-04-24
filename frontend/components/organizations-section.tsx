@@ -420,7 +420,7 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                     )}
 
                     <a
-                      href={`https://github.com/${selectedOrg}/people`}
+                      href={`https://github.com/orgs/${selectedOrg}/people`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-coral/20 text-coral hover:bg-coral/30 transition font-medium text-sm"
