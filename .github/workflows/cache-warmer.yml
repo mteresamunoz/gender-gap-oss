@@ -1,0 +1,41 @@
+name: Cache warmer
+
+on:
+  schedule:
+    - cron: '0 6 * * *'    # daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r data/requirements.txt
+
+      - name: Infer gender (resume from cache)
+        env:
+      
+        run: python data/scripts/infer_gender.py
+
+      - name: Fetch yearly contributions (resume)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python data/scripts/fetch_yearly_contributions.py
+
+      - name: Seed database
+        run: python data/scripts/seed_database.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || \
+            git commit -m "data: cache warm $(date +'%Y-%m-%d')"
+          git push
