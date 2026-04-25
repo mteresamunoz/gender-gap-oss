@@ -43,7 +43,7 @@ export function HeroSection({
           className="font-sans text-lg md:text-xl text-white/80 max-w-xl mx-auto leading-relaxed"
         >
           are women among the{" "}
-          <span className="text-foreground font-medium">top {totalAnalyzed} most followed</span>{" "}
+          <span className="text-foreground font-light">top {totalAnalyzed} most followed</span>{" "}
           profiles on GitHub.
         </motion.p>
 
@@ -54,7 +54,7 @@ export function HeroSection({
           className="font-sans text-sm text-white/60 mt-3 max-w-md mx-auto"
         >
           {femaleCount} of {classifiedCount} profiles identified as individual people. The remaining{" "}
-          {totalAnalyzed - classifiedCount} are organisation accounts or profiles whose name
+          {totalAnalyzed - classifiedCount}{" "}are organisation accounts or profiles whose name
           couldn&apos;t be classified.
         </motion.p>
 

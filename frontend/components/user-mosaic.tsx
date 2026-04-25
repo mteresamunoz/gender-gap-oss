@@ -53,7 +53,7 @@ export function UserMosaic({ users }: UserMosaicProps) {
             </div>
             <p className="text-sm text-white/60 max-w-lg">
               Every profile ranked by GitHub followers.{" "}
-              <span className="text-coral font-medium">{womenCount} women</span>{" "}
+              <span className="text-coral font-light">{womenCount} women</span>{" "}
               out of {users.length} total.
             </p>
           </div>
@@ -125,7 +125,7 @@ export function UserMosaic({ users }: UserMosaicProps) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
                       <span
-                        className={`text-sm font-medium truncate ${
+                        className={`text-sm font-light truncate ${
                           user.isWoman ? "text-coral" : "text-foreground"
                         }`}
                       >

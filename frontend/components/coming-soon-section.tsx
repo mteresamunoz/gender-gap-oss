@@ -64,7 +64,7 @@ export function ComingSoonSection({
           {/* Estimate */}
           <div className="inline-flex items-center gap-3 px-6 py-3 glass-strong border border-white/10 rounded-lg">
             <div className="w-2 h-2 rounded-full bg-coral animate-pulse" />
-            <span className="text-sm text-white/80 font-medium">
+            <span className="text-sm text-white/80 font-light">
               Coming Soon
             </span>
           </div>

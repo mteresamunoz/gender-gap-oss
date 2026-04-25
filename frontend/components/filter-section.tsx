@@ -285,7 +285,7 @@ function GlassButton({
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={`
-        relative px-5 py-2.5 rounded-xl text-sm font-sans font-medium
+        relative px-5 py-2.5 rounded-xl text-sm font-sans font-light
         border transition-all duration-300
         ${active 
           ? `${activeClass} shadow-lg` 
@@ -414,7 +414,7 @@ function GlassYearSlider({
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
               className={`
-                flex-1 py-2 rounded-lg text-xs font-sans font-medium
+                flex-1 py-2 rounded-lg text-xs font-sans font-light
                 border transition-all duration-300
                 ${isStart 
                   ? "bg-coral/20 border-coral/50 text-coral" 
@@ -639,11 +639,11 @@ export function FilterSection() {
               className="text-center mt-12 text-sm text-muted-foreground"
             >
               Showing women representation on{" "}
-              <span className="text-foreground font-medium">{platform === "github" ? "GitHub" : "Hugging Face"}</span>
+              <span className="text-foreground font-light">{platform === "github" ? "GitHub" : "Hugging Face"}</span>
               {country !== "all" && (
                 <>
                   {" "}in{" "}
-                  <span className="text-foreground font-medium">
+                  <span className="text-foreground font-light">
                     {countries.find((c) => c.code === country)?.name}
                   </span>
                 </>
@@ -651,7 +651,7 @@ export function FilterSection() {
               {category !== "All" && (
                 <>
                   {" "}for{" "}
-                  <span className="text-foreground font-medium">{category}</span>
+                  <span className="text-foreground font-light">{category}</span>
                 </>
               )}
               {" "}({yearRange[0]}-{yearRange[1]})

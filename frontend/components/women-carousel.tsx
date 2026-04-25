@@ -135,7 +135,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
               </div>
 
               {/* Name */}
-              <span className="text-sm font-medium text-foreground truncate max-w-[140px]">
+              <span className="text-sm font-light text-foreground truncate max-w-[140px]">
                 {user.name || user.login}
               </span>
               <span className="text-xs text-coral/80 truncate max-w-[140px]">
@@ -200,7 +200,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
                 <h3 className="text-xl font-serif text-foreground mb-1">
                   {selected.name || selected.login}
                 </h3>
-                <p className="text-coral font-medium mb-4">@{selected.login}</p>
+                <p className="text-coral font-light mb-4">@{selected.login}</p>
 
                 <div className="grid grid-cols-2 gap-3 w-full mb-6">
                   <div className="rounded-xl bg-white/[0.03] p-3">
@@ -237,7 +237,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
                   href={`https://github.com/${selected.login}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-coral/20 text-coral hover:bg-coral/30 transition font-medium text-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-coral/20 text-coral hover:bg-coral/30 transition font-light text-sm"
                 >
                   View on GitHub
                   <ExternalLink className="w-4 h-4" />

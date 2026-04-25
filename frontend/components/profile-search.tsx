@@ -184,7 +184,7 @@ export function ProfileSearch() {
                     </div>
                     <div className="p-4 bg-muted rounded-lg">
                       <p className="text-muted-foreground text-sm">
-                        <span className="text-foreground font-medium">
+                        <span className="text-foreground font-light">
                           {mockStats.topCountryWomen.percentage}%
                         </span>{" "}
                         of profiles from {mockStats.topCountryWomen.country} are women —
@@ -195,16 +195,16 @@ export function ProfileSearch() {
                 ) : (
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="text-muted-foreground">
-                      Ranked <span className="text-foreground font-medium">#{searchResult.rank}</span> on{" "}
+                      Ranked <span className="text-foreground font-light">#{searchResult.rank}</span> on{" "}
                       {searchResult.platform === "github" ? "GitHub" : "Hugging Face"} with{" "}
-                      <span className="text-foreground font-medium">
+                      <span className="text-foreground font-light">
                         {searchResult.followers.toLocaleString("en-US")}
                       </span>{" "}
                       followers.
                     </p>
                     <p className="text-sm text-muted-foreground mt-2">
                       Only{" "}
-                      <span className="text-coral font-medium">
+                      <span className="text-coral font-light">
                         {searchResult.platform === "github" ? "3.2%" : "5.1%"}
                       </span>{" "}
                       of the top 500 are women.

@@ -327,7 +327,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
                       </div>
                     ) : (
                       <>
-                        <h4 className="text-sm font-medium text-coral mb-3">Women ({women})</h4>
+                        <h4 className="text-sm font-semibold text-coral mb-3">Women ({women})</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                           {selectedData.women.map((user) => (
                             <a
@@ -344,7 +344,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
                               )}
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-1">
-                                  <span className="font-medium text-foreground text-sm truncate">{user.name || user.login}</span>
+                                  <span className="font-light text-foreground text-sm truncate">{user.name || user.login}</span>
                                   <ExternalLink className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition shrink-0" />
                                 </div>
                                 <span className="text-xs text-coral">@{user.login}</span>

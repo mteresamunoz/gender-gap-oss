@@ -25,7 +25,7 @@
 /* ── BASE ── */
 body {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -93,7 +93,7 @@ body {
 /* Large body — intro paragraphs */
 .text-body-lg {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 300;
   font-size: clamp(16px, 1.5vw, 20px);
   line-height: 1.75;
   text-wrap: pretty;
@@ -102,7 +102,7 @@ body {
 /* Standard body */
 .text-body {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 300;
   font-size: 15px;
   line-height: 1.7;
   text-wrap: pretty;
@@ -111,7 +111,7 @@ body {
 /* Small body — captions, footnotes */
 .text-body-sm {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 300;
   font-size: 13px;
   line-height: 1.6;
 }
