@@ -19,7 +19,7 @@ jobs:
         run: pip install -r data/requirements.txt
 
       - name: Infer gender (resume from cache)
-        run: python scripts/infer_gender.py
+        run: python data/scripts/infer_gender.py
 
       - name: Fetch yearly contributions (resume)
         env:
