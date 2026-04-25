@@ -1,14 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@font-face {
-  font-family: 'Raptor Sans';
-  src: url('/fonts/raptor-sans.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -41,8 +33,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Raptor Sans', 'Inter', system-ui, sans-serif;
-  --font-serif: 'Raptor Sans', 'Playfair Display', Georgia, serif;
+  --font-sans: var(--font-space), 'Space Grotesk', system-ui, sans-serif;
+  --font-serif: var(--font-space), 'Space Grotesk', Georgia, serif;
   --font-mono: 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
