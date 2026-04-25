@@ -138,6 +138,7 @@ If your name is misclassified (or you know someone who is), [open an issue](http
 - [gender-guesser](https://github.com/lead-ratings/gender-guesser) — offline name dictionary
 - [names-dataset](https://github.com/philipperemy/name-dataset) — global name frequency data
 - [Next.js](https://nextjs.org) + [Tailwind CSS](https://tailwindwindcss.com) + [Framer Motion](https://www.framer.com/motion/) + [D3.js](https://d3js.org)
+- **Raptor Sans** — display font by [Panos Voulgaris / rotweiler83](https://www.deviantart.com/rotweiler83)
 
 ---
 
