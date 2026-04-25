@@ -1,16 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: '--font-inter',
-})
-
-const playfair = Playfair_Display({ 
-  subsets: ["latin"],
-  variable: '--font-playfair',
+const raptorSans = localFont({
+  src: '../public/fonts/raptor-sans.ttf',
+  variable: '--font-raptor',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -28,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${raptorSans.variable}`}>
       <body className="font-sans antialiased bg-transparent">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
