@@ -12,8 +12,12 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
   const monthYear = now.toLocaleDateString("en-US", { month: "long", year: "numeric" })
 
   const displayDate = snapshotDate
-    ? new Date(snapshotDate).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    ? new Date(snapshotDate + "T00:00:00").toLocaleDateString("en-US", { month: "long", year: "numeric" })
     : monthYear
+
+  const displayYear = snapshotDate
+    ? new Date(snapshotDate + "T00:00:00").getFullYear()
+    : now.getFullYear()
 
   return (
     <footer className="py-16 px-4 border-t border-white/10 bg-transparent">
@@ -36,7 +40,7 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
           <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground mb-12">
             <div>
               <span className="block text-xs uppercase tracking-widest mb-1">Data Updated</span>
-              <span className="text-foreground">{displayDate ? new Date(displayDate).getFullYear() : now.getFullYear()}</span>
+              <span className="text-foreground">{displayYear}</span>
             </div>
 
             <div>
