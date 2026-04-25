@@ -24,6 +24,7 @@ jobs:
       - name: Fetch yearly contributions (resume)
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          PYTHONUNBUFFERED: "1"
         run: python data/scripts/fetch_yearly_contributions.py
 
       - name: Seed database
