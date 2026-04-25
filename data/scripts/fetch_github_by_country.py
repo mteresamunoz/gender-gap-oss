@@ -52,31 +52,12 @@ query($query: String!, $first: Int!) {
           followers {
             totalCount
           }
-          repositories(isFork: false, first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
-            nodes {
-              primaryLanguage {
-                name
-              }
-            }
-          }
         }
       }
     }
   }
 }
 """
-
-
-def top_language_from_repos(nodes):
-    """Pick the most-used primaryLanguage across public repos."""
-    counts = {}
-    for r in nodes or []:
-        lang = r.get("primaryLanguage", {}).get("name")
-        if lang:
-            counts[lang] = counts.get(lang, 0) + 1
-    if not counts:
-        return None
-    return max(counts.items(), key=lambda kv: kv[1])[0]
 
 
 def fetch_for_country(country, n=100, max_retries=3):
@@ -130,7 +111,7 @@ def fetch_for_country(country, n=100, max_retries=3):
             "country": infer_country(node.get("location")),
             "avatar_url": node.get("avatarUrl"),
             "account_created_year": int(created[:4]) if created else None,
-            "top_language": top_language_from_repos(node.get("repositories", {}).get("nodes")),
+            "top_language": None,
             "pronouns": node.get("pronouns"),
             "country_scope": country,
         }
