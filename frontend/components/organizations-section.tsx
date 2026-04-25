@@ -16,7 +16,10 @@ export type OrgStat = {
   total_members: number
   female: number
   male: number
+  unclassified: number
   female_pct: number
+  male_pct: number
+  unclassified_pct: number
   has_data: boolean
 }
 
@@ -287,33 +290,29 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
 
               {(() => {
                 const stat = statsByOrg[selectedOrg.toLowerCase()]
-                const womenPct = Math.round(stat.female_pct)
-                const menPct = Math.round(stat.male_pct)
-                const unclassPct = Math.round(stat.unclassified_pct)
+                const womenPct = stat.female_pct
+                const menPct = stat.male_pct
+                const unclassPct = stat.unclassified_pct
 
                 return (
                   <>
                     {/* Stats cards */}
-                    <div className="grid grid-cols-5 gap-3 mb-6">
+                    <div className="grid grid-cols-4 gap-3 mb-6">
                       <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                         <span className="block text-lg font-bold text-foreground">{stat.total_members}</span>
                         <span className="text-[10px] text-white/40">total</span>
                       </div>
                       <div className="rounded-xl bg-coral/10 p-3 text-center">
                         <span className="block text-lg font-bold text-coral">{stat.female}</span>
-                        <span className="text-[10px] text-coral/70">{womenPct}%</span>
+                        <span className="text-[10px] text-coral/70">{stat.female_pct.toFixed(1).replace('.', ',')}%</span>
                       </div>
                       <div className="rounded-xl bg-teal/10 p-3 text-center">
                         <span className="block text-lg font-bold text-teal">{stat.male}</span>
-                        <span className="text-[10px] text-teal/70">{menPct}%</span>
+                        <span className="text-[10px] text-teal/70">{stat.male_pct.toFixed(1).replace('.', ',')}%</span>
                       </div>
                       <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                         <span className="block text-lg font-bold text-foreground">{stat.unclassified}</span>
-                        <span className="text-[10px] text-white/40">{unclassPct}%</span>
-                      </div>
-                      <div className="rounded-xl bg-white/[0.03] p-3 text-center">
-                        <span className="block text-lg font-bold text-foreground">{stat.female_pct}%</span>
-                        <span className="text-[10px] text-white/40">women</span>
+                        <span className="text-[10px] text-white/40">{stat.unclassified_pct.toFixed(1).replace('.', ',')}%</span>
                       </div>
                     </div>
 
@@ -354,23 +353,23 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                           </svg>
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-xs font-bold text-foreground">
-                              {womenPct}%<span className="text-[8px] text-white/30 block">women</span>
+                              {womenPct.toFixed(1).replace('.', ',')}%<span className="text-[8px] text-white/30 block">women</span>
                             </span>
                           </div>
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm">
                             <div className="w-3 h-3 rounded bg-coral" />
-                            <span className="text-white/70">Women: {stat.female} ({womenPct}%)</span>
+                            <span className="text-white/70">Women: {stat.female} ({womenPct.toFixed(1).replace('.', ',')}%)</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm">
                             <div className="w-3 h-3 rounded bg-teal" />
-                            <span className="text-white/70">Men: {stat.male} ({menPct}%)</span>
+                            <span className="text-white/70">Men: {stat.male} ({menPct.toFixed(1).replace('.', ',')}%)</span>
                           </div>
                           {stat.unclassified > 0 && (
                             <div className="flex items-center gap-2 text-sm">
                               <div className="w-3 h-3 rounded bg-white/20" />
-                              <span className="text-white/40">Unknown: {stat.unclassified} ({unclassPct}%)</span>
+                              <span className="text-white/40">Unknown: {stat.unclassified} ({unclassPct.toFixed(1).replace('.', ',')}%)</span>
                             </div>
                           )}
                         </div>
