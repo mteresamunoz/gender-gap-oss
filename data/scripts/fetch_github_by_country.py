@@ -79,21 +79,36 @@ def top_language_from_repos(nodes):
     return max(counts.items(), key=lambda kv: kv[1])[0]
 
 
-def fetch_for_country(country, n=100):
+def fetch_for_country(country, n=100, max_retries=3):
     """Return list of user dicts for the given country via single GraphQL query."""
     query_str = f'location:{country} sort:followers-desc'
     payload = {
         "query": SEARCH_QUERY,
         "variables": {"query": query_str, "first": n},
     }
-    r = requests.post(GRAPHQL_URL, headers=GRAPHQL_HEADERS, json=payload, timeout=30)
-    if not r.ok:
-        print(f"  GraphQL HTTP {r.status_code}: {r.text[:200]}")
-        return []
 
-    data = r.json()
-    if data.get("errors"):
-        print(f"  GraphQL errors: {data['errors'][:2]}")
+    for attempt in range(1, max_retries + 1):
+        try:
+            r = requests.post(GRAPHQL_URL, headers=GRAPHQL_HEADERS, json=payload, timeout=30)
+            if r.status_code in (502, 503, 504):
+                print(f"  GraphQL HTTP {r.status_code} (attempt {attempt}/{max_retries}), retrying...")
+                time.sleep(2 ** attempt)
+                continue
+            if not r.ok:
+                print(f"  GraphQL HTTP {r.status_code}: {r.text[:200]}")
+                return []
+
+            data = r.json()
+            if data.get("errors"):
+                print(f"  GraphQL errors: {data['errors'][:2]}")
+                return []
+
+            break
+        except requests.RequestException as e:
+            print(f"  Request error on attempt {attempt}/{max_retries}: {e}")
+            time.sleep(2 ** attempt)
+    else:
+        print(f"  Failed after {max_retries} attempts.")
         return []
 
     edges = data.get("data", {}).get("search", {}).get("edges", [])
