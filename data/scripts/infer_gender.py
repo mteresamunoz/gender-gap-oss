@@ -443,9 +443,14 @@ def process_file(conn, job):
     print(f"  {total} records")
     print(f"  {orgs_skipped} org accounts skipped")
     print(f"  Classified {classified}/{total}")
-    print(f"    Female: {female} ({female / total * 100:.1f}%)")
-    print(f"    Male:   {male} ({male / total * 100:.1f}%)")
-    print(f"    Unknown: {total - classified - orgs_skipped}")
+    if total > 0:
+        print(f"    Female: {female} ({female / total * 100:.1f}%)")
+        print(f"    Male:   {male} ({male / total * 100:.1f}%)")
+        print(f"    Unknown: {total - classified - orgs_skipped}")
+    else:
+        print(f"    Female: {female} (N/A)")
+        print(f"    Male:   {male} (N/A)")
+        print(f"    Unknown: 0")
     print(f"  Saved to {output_path}")
 
 
