@@ -116,6 +116,14 @@ OVERRIDES = {
     "knadh": ("male", 1.0, "high"),               # Kailash Nadh (male)
     "premchapagain": ("male", 1.0, "high"),       # Prem Chapagain (male)
     "zdaxie": ("male", 0.82, "medium"),           # Zhenda Xie (male)
+    "yihui": ("male", 1.0, "high"),                # Yihui Xie (male)
+}
+
+# Name-based overrides (case-insensitive first name → gender).
+# Use sparingly: only when a name is universally one gender across all countries.
+# If country-specific, add to gender_cache via login override instead.
+NAME_OVERRIDES = {
+    "yihui": "male",
 }
 
 
@@ -267,16 +275,49 @@ def parse_pronouns_from_bio(bio):
     return None
 
 
-def classify(first_name, country=None):
-    """Classify a single first name using gender-guesser + names-dataset fallback.
+def get_cache_entry(conn, first_name, country_iso2):
+    """Look up a (first_name, country) pair in the gender cache.
+
+    Returns (gender, probability, confidence) or None if not found.
+    """
+    if not first_name:
+        return None
+    row = conn.execute(
+        """
+        SELECT gender, probability, confidence
+        FROM gender_cache
+        WHERE first_name = ? AND country_iso2 = ?
+        """,
+        (first_name.lower(), country_iso2 or ""),
+    ).fetchone()
+    if row:
+        return row["gender"], row["probability"], row["confidence"]
+    return None
+
+
+def classify(conn, first_name, country=None):
+    """Classify a single first name: cache → gender-guesser → names-dataset fallback.
 
     Returns (gender, probability, confidence, source).
     """
     if not first_name:
         return None, 0.0, "unknown", "none"
 
-    # 1. Try gender-guesser first (fast, 61K names, 43 countries).
-    iso2 = COUNTRY_MAP.get(country)
+    first_lc = first_name.lower()
+    iso2 = COUNTRY_MAP.get(country, "")
+
+    # 0. Name-based override (universal, country-agnostic).
+    if first_lc in NAME_OVERRIDES:
+        g = NAME_OVERRIDES[first_lc]
+        return g, 1.0, "high", "name-override"
+
+    # 1. Check cache first (avoids re-inferring known names).
+    cached = get_cache_entry(conn, first_name, iso2)
+    if cached:
+        g, prob, conf = cached
+        return g, prob, conf, "cache"
+
+    # 2. Try gender-guesser (fast, 61K names, 43 countries).
     raw = None
     if iso2:
         raw = detector.get_gender(first_name, iso2.lower())
@@ -293,7 +334,7 @@ def classify(first_name, country=None):
     }
     result = mapping.get(raw, (None, 0.0, "unknown", "gender-guesser"))
 
-    # 2. If gender-guesser is unknown, try names-dataset fallback (728K names).
+    # 3. If gender-guesser is unknown, try names-dataset fallback (728K names).
     if result[0] is None:
         g, prob, conf = classify_names_dataset(first_name)
         if g:
@@ -416,9 +457,9 @@ def process_file(conn, job):
                     male += 1
             continue
 
-        # ── 4. Name-based classification (gender-guesser → names-dataset fallback) ──
+        # ── 4. Name-based classification (cache → gender-guesser → names-dataset fallback) ──
         country = u.get(country_field) if country_field else None
-        g, prob, conf, src = classify(first, country)
+        g, prob, conf, src = classify(conn, first, country)
 
         u["gender"] = g
         u["gender_probability"] = prob
