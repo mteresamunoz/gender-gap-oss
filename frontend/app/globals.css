@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './typography.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -33,9 +34,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-space), 'Space Grotesk', system-ui, sans-serif;
-  --font-serif: var(--font-space), 'Space Grotesk', Georgia, serif;
-  --font-mono: 'Geist Mono', monospace;
+  --font-sans: var(--font-body), 'Space Grotesk', system-ui, sans-serif;
+  --font-serif: var(--font-display), 'Chakra Petch', Georgia, serif;
+  --font-mono: var(--font-mono), 'Space Mono', 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -74,6 +75,7 @@
   body {
     @apply text-foreground;
     background: transparent;
+    font-family: var(--font-body), 'Space Grotesk', system-ui, sans-serif;
   }
 }
 

@@ -1,0 +1,202 @@
+/* ═══════════════════════════════════════════════════════
+   TYPOGRAPHY SYSTEM — Gender Gap in AI
+   Three-font stack: display · body · mono
+
+   Usage:
+     1. Add the Google Fonts <link> to your <head> (see below)
+     2. Import this file in your CSS or globals.css
+
+   Google Fonts link to paste in <head>:
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+   Or as @import (slower but convenient):
+   @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+════════════════════════════════════════════════════════ */
+
+/* ── FONT FAMILIES ── */
+:root {
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'Space Mono', 'Geist Mono', monospace;
+}
+
+/* ── BASE ── */
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ══════════════════════════════════════════
+   DISPLAY — Chakra Petch
+   Use for: hero stats, section titles, hero headings
+   Never use below 24px
+══════════════════════════════════════════ */
+
+/* Hero stat (8.5%, 25, etc.) */
+.text-stat {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+}
+
+/* Page / section hero title */
+.text-h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(36px, 5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Sub-section title */
+.text-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(24px, 3.5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+/* Card / widget title */
+.text-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(18px, 2.5vw, 28px);
+  line-height: 1.2;
+}
+
+/* Italic display — for dramatic pull quotes */
+.text-display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(28px, 4vw, 56px);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════════
+   BODY — Space Grotesk
+   Use for: paragraphs, descriptions, card text
+══════════════════════════════════════════ */
+
+/* Large body — intro paragraphs */
+.text-body-lg {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+/* Standard body */
+.text-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* Small body — captions, footnotes */
+.text-body-sm {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Bold body emphasis */
+.text-body-strong {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════
+   MONO — Space Mono
+   Use for: data labels, stats inline, @usernames,
+            code snippets, number counters
+══════════════════════════════════════════ */
+
+/* Data label / username */
+.text-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Mono bold — inline stat highlight */
+.text-mono-bold {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   UI ELEMENTS
+   Use for: nav, buttons, tags, small caps labels
+══════════════════════════════════════════ */
+
+/* Eyebrow label — "WHERE ARE THE WOMEN?" */
+.text-label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* Nav links */
+.text-nav {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Button text */
+.text-button {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Badge / tag */
+.text-badge {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════
+   TAILWIND-COMPATIBLE UTILITIES
+   If you use Tailwind, add these to your
+   tailwind.config.js under theme.extend.fontFamily:
+
+   fontFamily: {
+     display: ['Chakra Petch', 'system-ui', 'sans-serif'],
+     body:    ['Space Grotesk', 'system-ui', 'sans-serif'],
+     mono:    ['Space Mono', 'Geist Mono', 'monospace'],
+   }
+
+   Then use: font-display, font-body, font-mono
+══════════════════════════════════════════ */
