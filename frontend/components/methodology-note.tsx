@@ -17,8 +17,8 @@ const sections = [
   },
   {
     icon: Heart,
-    title: "A note to trans & non-binary people",
-    text: "If you are trans or non-binary and want your profile shown with a different description — or removed entirely — use the report button in the bottom-right corner. This project is open precisely for that. We do not want to reduce anyone to a category they do not identify with.",
+    title: "A note to people misrepresented",
+    text: "If your gender is misclassified — or you simply want your profile removed — use the report button in the bottom-right corner. This project is open precisely for that. We do not want to reduce anyone to a category they do not identify with.",
   },
   {
     icon: Sparkles,
