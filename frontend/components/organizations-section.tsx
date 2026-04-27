@@ -296,26 +296,6 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
 
                 return (
                   <>
-                    {/* Stats cards */}
-                    <div className="grid grid-cols-4 gap-3 mb-6">
-                      <div className="rounded-xl bg-white/[0.03] p-3 text-center">
-                        <span className="block text-lg font-bold text-foreground">{stat.total_members}</span>
-                        <span className="text-[10px] text-white/40">total</span>
-                      </div>
-                      <div className="rounded-xl bg-coral/10 p-3 text-center">
-                        <span className="block text-lg font-bold text-coral">{stat.female}</span>
-                        <span className="text-[10px] text-coral/70">{stat.female_pct.toFixed(1).replace('.', ',')}%</span>
-                      </div>
-                      <div className="rounded-xl bg-teal/10 p-3 text-center">
-                        <span className="block text-lg font-bold text-teal">{stat.male}</span>
-                        <span className="text-[10px] text-teal/70">{stat.male_pct.toFixed(1).replace('.', ',')}%</span>
-                      </div>
-                      <div className="rounded-xl bg-white/[0.03] p-3 text-center">
-                        <span className="block text-lg font-bold text-foreground">{stat.unclassified}</span>
-                        <span className="text-[10px] text-white/40">{stat.unclassified_pct.toFixed(1).replace('.', ',')}%</span>
-                      </div>
-                    </div>
-
                     {/* Donut */}
                     {stat.total_members > 0 && (
                       <div className="flex items-center justify-center gap-6 mb-6">
