@@ -231,10 +231,10 @@
         "followers": 95,
         "avatar_url": "https://avatars.githubusercontent.com/u/53121322?v=4",
         "pronouns": "",
-        "gender": "female",
-        "probability": 0.95,
+        "gender": "male",
+        "probability": 1.0,
         "confidence": "high",
-        "source": "gender-guesser"
+        "source": "override"
       },
       {
         "login": "stevenheidel",
