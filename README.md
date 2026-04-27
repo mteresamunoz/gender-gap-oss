@@ -19,7 +19,7 @@ This project tracks gender representation at scale across the most influential o
 
 | | Count | Percentage |
 |---|---|---|
-| Women (inferred) | 25 | 5.0% |
+| Women (inferred) | 24 | 8.2% |
 | Men (inferred) | 269 | 53.8% |
 | Unclassified / orgs | 206 | 41.2% |
 
@@ -130,7 +130,7 @@ On the next pipeline run, if we encounter the **same first name + same country**
 - Only covers "male" and "female" in the statistical layer — non-binary gender is not represented by our tools
 - Users without a real name in their profile, or with rare/non-Western names, may be marked "unknown"
 - This is an approximation of a structural pattern, not a census of individuals
-- If you are misclassified or want your profile removed, [open an issue](https://github.com/mteresamunoz/gender-gap-oss/issues)
+- If you are misclassified or want your profile removed, use the [report form](https://gender-gap-oss.vercel.app) on the site or email us at [gendergapintech@gmail.com](mailto:gendergapintech@gmail.com)
 
 ---
 
@@ -158,7 +158,7 @@ Every commit to `main` triggers a Vercel redeploy with the latest data.
 
 ## Correct a classification
 
-If your name is misclassified (or you know someone who is), [open an issue](https://github.com/mteresamunoz/gender-gap-oss/issues) with the GitHub username and the correct gender. We maintain a manual overrides list that gets applied on every pipeline run.
+If your name is misclassified (or you know someone who is), use the **report form** directly on the [live dashboard](https://gender-gap-oss.vercel.app) (bottom-right corner) or email us at **gendergapintech@gmail.com** with the GitHub username and the correct gender. We maintain a manual overrides list that gets applied on every pipeline run.
 
 ---
 
