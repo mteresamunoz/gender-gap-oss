@@ -117,6 +117,7 @@ OVERRIDES = {
     "premchapagain": ("male", 1.0, "high"),       # Prem Chapagain (male)
     "zdaxie": ("male", 0.82, "medium"),           # Zhenda Xie (male)
     "yihui": ("male", 1.0, "high"),                # Yihui Xie (male)
+    "vinta": ("male", 1.0, "high"),                # Vinta Chen (male)
 }
 
 # Name-based overrides (case-insensitive first name → gender).
@@ -124,6 +125,7 @@ OVERRIDES = {
 # If country-specific, add to gender_cache via login override instead.
 NAME_OVERRIDES = {
     "yihui": "male",
+    "vinta": "male",
 }
 
 
