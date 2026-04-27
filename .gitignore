@@ -34,6 +34,13 @@ frontend/db/
 .DS_Store
 Thumbs.db
 
+# ─── Local/debug scripts (not part of the data pipeline) ───────
+data/scripts/check_*.py
+data/scripts/explain_*.py
+data/scripts/fix_*.py
+data/scripts/list_*.py
+data/scripts/test_*.py
+
 # ─── Logs ──────────────────────────────────────────────────────
 *.log
 

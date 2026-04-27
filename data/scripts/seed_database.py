@@ -8,6 +8,7 @@ scripts_dir = os.path.dirname(__file__)
 sys.path.insert(0, scripts_dir)
 from db import get_db, setup_schema
 from curated_repos import CURATED_REPOS
+from seed_repo_yearly import seed as seed_repo_yearly
 
 PROCESSED_PATH = os.path.join(scripts_dir, "..", "processed", "github_users.json")
 AI_CONTRIB_RAW_PATH = os.path.join(scripts_dir, "..", "raw", "ai_repo_contributors.json")
@@ -295,6 +296,7 @@ def main():
     seed_ai_repos(conn)
     seed_ai_repo_contributors(conn)
     seed_contributors(conn)
+    seed_repo_yearly(conn)
     seed_org_members(conn)
     conn.close()
     print("\nDB updated.")

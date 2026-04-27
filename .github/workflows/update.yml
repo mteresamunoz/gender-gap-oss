@@ -39,6 +39,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python data/scripts/fetch_yearly_contributions.py
 
+      - name: Fetch repo yearly stats
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: python data/scripts/fetch_repo_yearly.py
+
       - name: Seed database
         run: python data/scripts/seed_database.py
 

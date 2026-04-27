@@ -337,6 +337,154 @@ export function getUsersWithCountry(): UserWithCountry[] {
     .all() as UserWithCountry[]
 }
 
+// ───────────────────────────────────────────────
+// Per-repo gender breakdown
+// ───────────────────────────────────────────────
+
+export type RepoStat = {
+  repo: string
+  category: string
+  total_contributors: number
+  female: number
+  male: number
+  unknown: number
+  female_pct: number
+  male_pct: number
+  female_commit_pct: number
+  male_commit_pct: number
+  unclassified_commit_pct: number
+}
+
+export function getRepoStats(): RepoStat[] {
+  try {
+    return db()
+      .prepare(
+        `
+        SELECT
+          rcy.repo,
+          COALESCE(ar.category, 'unknown') AS category,
+          COUNT(DISTINCT rcy.login) AS total_contributors,
+          COUNT(DISTINCT CASE WHEN c.gender = 'female' THEN rcy.login END) AS female,
+          COUNT(DISTINCT CASE WHEN c.gender = 'male' THEN rcy.login END) AS male,
+          COUNT(DISTINCT CASE WHEN c.gender IS NULL THEN rcy.login END) AS unknown,
+          ROUND(
+            100.0 * COUNT(DISTINCT CASE WHEN c.gender = 'female' THEN rcy.login END)
+            / NULLIF(COUNT(DISTINCT rcy.login), 0),
+            1
+          ) AS female_pct,
+          ROUND(
+            100.0 * COUNT(DISTINCT CASE WHEN c.gender = 'male' THEN rcy.login END)
+            / NULLIF(COUNT(DISTINCT rcy.login), 0),
+            1
+          ) AS male_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender = 'female' THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS female_commit_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender = 'male' THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS male_commit_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender IS NULL THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS unclassified_commit_pct
+        FROM repo_contributor_yearly rcy
+        LEFT JOIN contributors c ON rcy.login = c.login
+        LEFT JOIN ai_repos ar ON rcy.repo = ar.repo
+        GROUP BY rcy.repo
+        ORDER BY total_contributors DESC
+        `,
+      )
+      .all() as RepoStat[]
+  } catch {
+    return []
+  }
+}
+
+export type RepoYearStat = {
+  year: number
+  total_contributors: number
+  female: number
+  male: number
+  female_commit_pct: number
+  male_commit_pct: number
+  unclassified_commit_pct: number
+}
+
+export function getRepoTimeline(repo: string): RepoYearStat[] {
+  try {
+    return db()
+      .prepare(
+        `
+        SELECT
+          rcy.year,
+          COUNT(DISTINCT rcy.login) AS total_contributors,
+          COUNT(DISTINCT CASE WHEN c.gender = 'female' THEN rcy.login END) AS female,
+          COUNT(DISTINCT CASE WHEN c.gender = 'male' THEN rcy.login END) AS male,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender = 'female' THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS female_commit_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender = 'male' THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS male_commit_pct,
+          ROUND(
+            100.0 * SUM(CASE WHEN c.gender IS NULL THEN rcy.commits ELSE 0 END)
+            / NULLIF(SUM(rcy.commits), 0),
+            1
+          ) AS unclassified_commit_pct
+        FROM repo_contributor_yearly rcy
+        LEFT JOIN contributors c ON rcy.login = c.login
+        WHERE rcy.repo = ?
+        GROUP BY rcy.year
+        ORDER BY rcy.year
+        `,
+      )
+      .all(repo) as RepoYearStat[]
+  } catch {
+    return []
+  }
+}
+
+export type RepoContributor = {
+  login: string
+  name: string | null
+  avatar_url: string | null
+  gender: string | null
+  total_commits: number
+}
+
+export function getRepoWomen(repo: string): RepoContributor[] {
+  try {
+    return db()
+      .prepare(
+        `
+        SELECT
+          rcy.login,
+          c.name,
+          c.avatar_url,
+          c.gender,
+          SUM(rcy.commits) AS total_commits
+        FROM repo_contributor_yearly rcy
+        LEFT JOIN contributors c ON rcy.login = c.login
+        WHERE rcy.repo = ? AND c.gender = 'female'
+        GROUP BY rcy.login
+        ORDER BY total_commits DESC
+        `,
+      )
+      .all(repo) as RepoContributor[]
+  } catch {
+    return []
+  }
+}
+
 export type OrgStat = {
   org_login: string
   total_members: number

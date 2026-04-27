@@ -8,6 +8,7 @@ import { CategoryBreakdown } from "@/components/category-breakdown"
 import { LanguageBreakdown } from "@/components/language-breakdown"
 import { WorldMapSection } from "@/components/world-map-section"
 import { OrganizationsSection } from "@/components/organizations-section"
+import { RepoBreakdownSection } from "@/components/repo-breakdown-section"
 import { FooterSection } from "@/components/footer-section"
 import {
   getOverallStats,
@@ -19,6 +20,9 @@ import {
   getTimelineByYear,
   getContributorTimeline,
   getAllOrgMembers,
+  getRepoStats,
+  getRepoTimeline,
+  getRepoWomen,
 } from "@/lib/queries"
 import { WomenCarousel } from "@/components/women-carousel"
 import { ReportFAB } from "@/components/report-fab"
@@ -41,6 +45,13 @@ export default function HomePage() {
   const isPerCountryData = distinctPerCountry >= 10
   const usersByCountry = isPerCountryData ? perCountryUsers : getUsersWithCountry()
   const orgMembers = getAllOrgMembers()
+  const repoStats = getRepoStats()
+  const repoTimelines: Record<string, ReturnType<typeof getRepoTimeline>> = {}
+  const repoWomen: Record<string, ReturnType<typeof getRepoWomen>> = {}
+  for (const r of repoStats) {
+    repoTimelines[r.repo] = getRepoTimeline(r.repo)
+    repoWomen[r.repo] = getRepoWomen(r.repo)
+  }
   const classifiedCount = stats.female + stats.male
 
   // Try real timeline data; fall back to account creation years if no contributor data yet
@@ -89,6 +100,12 @@ export default function HomePage() {
         orgs={orgs}
         orgStats={orgStats}
         orgMembers={orgMembers}
+      />
+
+      <RepoBreakdownSection
+        repoStats={repoStats}
+        repoTimelines={repoTimelines}
+        repoWomen={repoWomen}
       />
 
       <FooterSection totalAnalyzed={stats.total} snapshotDate={stats.snapshotDate} />

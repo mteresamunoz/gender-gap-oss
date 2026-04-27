@@ -160,6 +160,18 @@ def setup_schema(conn):
         );
         CREATE INDEX IF NOT EXISTS idx_gu_country_scope ON github_users_by_country(country_scope);
         CREATE INDEX IF NOT EXISTS idx_gu_country ON github_users_by_country(country);
+
+        -- Per-repo, per-year commit counts (from fetch_repo_yearly.py).
+        -- Aggregated from GitHub's /stats/contributors weekly data.
+        CREATE TABLE IF NOT EXISTS repo_contributor_yearly (
+            repo TEXT NOT NULL,
+            login TEXT NOT NULL,
+            year INTEGER NOT NULL,
+            commits INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (repo, login, year)
+        );
+        CREATE INDEX IF NOT EXISTS idx_rcy_repo ON repo_contributor_yearly(repo);
+        CREATE INDEX IF NOT EXISTS idx_rcy_year ON repo_contributor_yearly(year);
     """)
 
     # Migrate: add bio column if missing (introduced after initial schema)
