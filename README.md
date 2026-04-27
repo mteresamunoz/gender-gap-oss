@@ -82,16 +82,46 @@ Click any organization to see:
 
 ### How we infer gender
 
-We use a **tiered approach** that prioritises self-declared information:
+We use a **tiered, caching approach** that prioritises self-declared information and learns from past classifications. The pipeline runs on every data update (monthly for the main dataset, daily for per-country data).
 
-| Priority | Source | Reliability |
+#### Classification flow (per user)
+
+For each user, the pipeline checks the following sources **in order**. The first match wins:
+
+| Step | Source | How it works | Reliability |
+|---|---|---|---|
+| 1 | **Self-declared pronouns** | GitHub's dedicated `pronouns` field (e.g. "she/her", "he/him") | Highest |
+| 2 | **Pronouns in bio** | Scans profile bio text for pronoun declarations | High |
+| 3 | **Organisation check** | Skips accounts where `type: "Organization"` or login is in a known-org list | High |
+| 4 | **Manual login override** | Hard-coded list of specific GitHub logins with known gender (e.g. `yihui` → male) | High |
+| 5 | **Universal name override** | Hard-coded list of first names that are always one gender across all countries (e.g. `Yihui` → male) | High |
+| 6 | **Cached name+country lookup** | Queries an internal SQLite cache: *"Have we already classified a person named X from country Y?"* If yes, reuses that result. | High |
+| 7 | **gender-guesser** | Offline dictionary of ~61K names across 43 countries. Respects country context (e.g. `Andrea` is female in Spain, male in Italy). | Medium |
+| 8 | **names-dataset fallback** | Offline Facebook-derived dataset of ~728K global names. Used only when gender-guesser returns "unknown". | Medium |
+
+#### How the cache works
+
+Every time a name is classified (by any method), the result is stored in the `gender_cache` table:
+
+```
+(first_name, country_iso2) → (gender, probability, confidence)
+```
+
+On the next pipeline run, if we encounter the **same first name + same country**, we skip all dictionaries and reuse the cached result instantly. This makes re-runs fast and consistent.
+
+**Example:**
+- `Lucas` from `Spain` is classified as `male` via gender-guesser → stored in cache.
+- Next pipeline run: another `Lucas` from `Spain` → **cache hit**, classified as `male` immediately.
+- But `Andrea` from `Italy` is NOT in the cache yet → falls through to gender-guesser (which returns `male` for Italy).
+
+#### What gets classified
+
+| Dataset | Sample size | Update frequency |
 |---|---|---|
-| 1 | **Self-declared pronouns** — GitHub's pronouns field (GraphQL API) | Highest |
-| 2 | **Pronouns in bio** — "he/him", "she/her" etc. written in profile bio | High |
-| 3 | **Organisation accounts** — `type: "Organization"` from GitHub API + known-org list | High |
-| 4 | **Manual overrides** — known misclassifications we correct by hand | High |
-| 5 | **gender-guesser** — offline name dictionary (~61K names, 43 countries) | Medium |
-| 6 | **names-dataset** — fallback offline dictionary (~728K names) | Medium |
+| **GitHub Top 500** | 500 most-followed users | Monthly (day 1) |
+| **AI repo contributors** | ~1,700 top contributors across 20 AI repos | Monthly (day 1) |
+| **Per-country top 100** | 100 users × ~30 countries (rotating) | Daily (one country per day) |
+| **Organization members** | Public members of 22 orgs | On-demand (manual fetch) |
 
 **Important:** No API calls to external gender inference services. Everything is offline, free, and reproducible.
 
