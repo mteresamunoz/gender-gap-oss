@@ -43,6 +43,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
   const isDragging = useRef(false)
   const lastPos = useRef<[number, number]>([0, 0])
   const isInView = useRef(false)
+  const touchStartDist = useRef<number | null>(null)
+  const globeWrapperRef = useRef<HTMLDivElement>(null)
 
   const byCountry = useMemo(() => {
     const map: Record<string, { all: UserWithCountry[]; women: UserWithCountry[] }> = {}
@@ -101,9 +103,49 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
     isDragging.current = false
   }, [])
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault()
-    setScale((prev) => Math.max(150, Math.min(600, prev - e.deltaY * 0.5)))
+    setScale((prev) => Math.max(150, Math.min(600, prev - e.deltaY * 0.15)))
+  }, [])
+
+  // Native wheel listener with passive:false so the browser scroll doesn't hijack zoom
+  useEffect(() => {
+    const el = globeWrapperRef.current
+    if (!el) return
+    el.addEventListener("wheel", handleWheel, { passive: false })
+    return () => el.removeEventListener("wheel", handleWheel)
+  }, [handleWheel])
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      touchStartDist.current = Math.sqrt(dx * dx + dy * dy)
+    } else if (e.touches.length === 1) {
+      isDragging.current = true
+      lastPos.current = [e.touches[0].clientX, e.touches[0].clientY]
+    }
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchStartDist.current !== null) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      const newDist = Math.sqrt(dx * dx + dy * dy)
+      const ratio = newDist / touchStartDist.current
+      touchStartDist.current = newDist
+      setScale((prev) => Math.max(150, Math.min(600, prev * ratio)))
+    } else if (e.touches.length === 1 && isDragging.current) {
+      const dx = e.touches[0].clientX - lastPos.current[0]
+      const dy = e.touches[0].clientY - lastPos.current[1]
+      setRotation((prev) => [prev[0] + dx * 0.5, Math.max(-90, Math.min(90, prev[1] - dy * 0.5))])
+      lastPos.current = [e.touches[0].clientX, e.touches[0].clientY]
+    }
+  }, [])
+
+  const handleTouchEnd = useCallback(() => {
+    isDragging.current = false
+    touchStartDist.current = null
   }, [])
 
   // Render globe
@@ -133,8 +175,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("r", scale)
-      .attr("fill", "rgba(255,255,255,0.02)")
-      .attr("stroke", "rgba(255,255,255,0.1)")
+      .attr("fill", "rgba(255,255,255,0.08)")
+      .attr("stroke", "rgba(255,255,255,0.25)")
       .attr("stroke-width", 1)
 
     const getColor = (featureName: string) => {
@@ -142,10 +184,10 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
         ([, v]) => v === featureName
       )?.[0] || featureName
       const data = byCountry[ourName]
-      if (!data) return "rgba(255,255,255,0.03)"
-      if (data.women.length > 0) return "rgba(255,107,107,0.5)"
-      if (data.all.some((u) => u.gender === "male")) return "rgba(75,191,160,0.45)"
-      return "rgba(255,255,255,0.03)"
+      if (!data) return "rgba(255,255,255,0.12)"
+      if (data.women.length > 0) return "rgba(255,107,107,0.75)"
+      if (data.all.some((u) => u.gender === "male")) return "rgba(75,191,160,0.70)"
+      return "rgba(255,255,255,0.12)"
     }
 
     svg.selectAll("path.country")
@@ -155,7 +197,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       .attr("class", "country")
       .attr("d", path as any)
       .attr("fill", (d: any) => getColor(d.properties?.name))
-      .attr("stroke", "rgba(255,255,255,0.1)")
+      .attr("stroke", "rgba(255,255,255,0.25)")
       .attr("stroke-width", 0.5)
       .style("cursor", (d: any) => {
         const ourName = Object.entries(COUNTRY_NAME_MAP).find(
@@ -174,11 +216,11 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
           ([, v]) => v === d.properties?.name
         )?.[0] || d.properties?.name
         if (byCountry[ourName]) {
-          d3.select(this).attr("stroke", "rgba(255,107,107,0.8)").attr("stroke-width", 1.5)
+          d3.select(this).attr("stroke", "rgba(255,107,107,0.9)").attr("stroke-width", 1.5)
         }
       })
       .on("mouseout", function () {
-        d3.select(this).attr("stroke", "rgba(255,255,255,0.1)").attr("stroke-width", 0.5)
+        d3.select(this).attr("stroke", "rgba(255,255,255,0.25)").attr("stroke-width", 0.5)
       })
 
     // Globe outline
@@ -187,7 +229,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       .attr("cy", height / 2)
       .attr("r", scale)
       .attr("fill", "none")
-      .attr("stroke", "rgba(255,255,255,0.15)")
+      .attr("stroke", "rgba(255,255,255,0.30)")
       .attr("stroke-width", 1.5)
   }, [worldData, rotation, scale, byCountry])
 
@@ -236,27 +278,30 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
         </motion.div>
 
         <div
-          className="rounded-2xl overflow-hidden border border-white/5 bg-white/[0.01] cursor-grab active:cursor-grabbing"
+          ref={globeWrapperRef}
+          className="cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <svg ref={svgRef} className="w-full" style={{ minHeight: 500 }} />
         </div>
 
         <div className="flex items-center justify-center gap-6 mt-4 text-xs text-white/40">
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,107,107,0.5)" }} />
+            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,107,107,0.75)" }} />
             Has women
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(75,191,160,0.45)" }} />
+            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(75,191,160,0.70)" }} />
             Only men
           </span>
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.03)" }} />
+            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.12)" }} />
             No data
           </span>
         </div>
