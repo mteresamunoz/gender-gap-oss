@@ -118,6 +118,7 @@ OVERRIDES = {
     "zdaxie": ("male", 0.82, "medium"),           # Zhenda Xie (male)
     "yihui": ("male", 1.0, "high"),                # Yihui Xie (male)
     "vinta": ("male", 1.0, "high"),                # Vinta Chen (male)
+    "soma00333": ("male", 1.0, "high"),            # Soma Utsumi (male)
 }
 
 # Name-based overrides (case-insensitive first name → gender).
