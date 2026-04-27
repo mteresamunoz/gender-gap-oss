@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
-import { Info, X, Heart, ShieldAlert, Scale } from "lucide-react"
+import { Info, X, Heart, ShieldAlert, Scale, Sparkles } from "lucide-react"
 
 const sections = [
   {
@@ -18,7 +18,12 @@ const sections = [
   {
     icon: Heart,
     title: "A note to trans & non-binary people",
-    text: "If you are trans or non-binary and want your profile shown with a different description — or removed entirely — open an issue or a pull request. This project is open precisely for that. We do not want to reduce anyone to a category they do not identify with.",
+    text: "If you are trans or non-binary and want your profile shown with a different description — or removed entirely — use the report button in the bottom-right corner. This project is open precisely for that. We do not want to reduce anyone to a category they do not identify with.",
+  },
+  {
+    icon: Sparkles,
+    title: "What is coming next",
+    text: "The report form is the first step toward better gender representation. We are collecting feedback to understand how to include non-binary identities in future iterations of this project. Your voice matters — tell us how we can make this data more inclusive.",
   },
 ]
 
@@ -129,7 +134,7 @@ export function MethodologyNote() {
                     }}
                     className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2 bg-transparent border-none p-0 cursor-pointer"
                   >
-                    report button
+                    report form
                   </button>
                   {" "}in the bottom-right corner.
                 </p>
