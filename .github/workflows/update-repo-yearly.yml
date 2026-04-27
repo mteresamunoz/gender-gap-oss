@@ -1,0 +1,41 @@
+name: Update repo yearly stats
+
+on:
+  schedule:
+    - cron: '0 5 * * *'    # daily at 05:00 UTC (before countries at 06:00)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-repo-yearly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r data/requirements.txt
+
+      - name: Fetch repo yearly stats (resumable)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          PYTHONUNBUFFERED: "1"
+        run: python data/scripts/fetch_repo_yearly.py
+
+      - name: Seed repo yearly data
+        run: python data/scripts/seed_repo_yearly.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || \
+            git commit -m "data: repo yearly update $(date +'%Y-%m-%d')"
+          git pull --rebase
+          git push
