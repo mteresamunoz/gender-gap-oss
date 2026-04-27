@@ -21,6 +21,7 @@ import {
   getAllOrgMembers,
 } from "@/lib/queries"
 import { WomenCarousel } from "@/components/women-carousel"
+import { ReportFAB } from "@/components/report-fab"
 
 export const dynamic = "force-static"
 
@@ -91,6 +92,7 @@ export default function HomePage() {
       />
 
       <FooterSection totalAnalyzed={stats.total} snapshotDate={stats.snapshotDate} />
+      <ReportFAB />
     </main>
   )
 }

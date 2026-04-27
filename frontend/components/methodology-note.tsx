@@ -121,16 +121,17 @@ export function MethodologyNote() {
                   >
                     gender-guesser
                   </a>
-                  . If you spot an error in your classification,{" "}
-                  <a
-                    href="https://github.com/mteresamunoz/gender-gap-oss/issues"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2"
+                  . If you spot an error in your classification, use the{" "}
+                  <button
+                    onClick={() => {
+                      const evt = new CustomEvent("open-report-modal")
+                      window.dispatchEvent(evt)
+                    }}
+                    className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2 bg-transparent border-none p-0 cursor-pointer"
                   >
-                    open an issue
-                  </a>
-                  .
+                    report button
+                  </button>
+                  {" "}in the bottom-right corner.
                 </p>
               </motion.div>
             </motion.div>

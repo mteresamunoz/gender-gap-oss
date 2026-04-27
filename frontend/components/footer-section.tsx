@@ -75,14 +75,19 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
               @mteresamunoz
             </a>
             {" · "}
-            <a
-              href="https://github.com/mteresamunoz/gender-gap-oss/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2"
-            >
-              Report an issue
-            </a>
+            <span className="text-white/40">
+              Spot an error? Use the{" "}
+              <button
+                onClick={() => {
+                  const evt = new CustomEvent("open-report-modal")
+                  window.dispatchEvent(evt)
+                }}
+                className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2 bg-transparent border-none p-0 cursor-pointer"
+              >
+                floating button
+              </button>
+              {" "}to report it.
+            </span>
           </p>
         </div>
       </div>
