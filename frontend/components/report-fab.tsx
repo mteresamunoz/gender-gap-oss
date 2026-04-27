@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Flag, X, CheckCircle, Loader2 } from "lucide-react"
 
-const FORMSPREE_URL = "https://formspree.io/f/PLACEHOLDER"
+const FORMSPREE_URL = "https://formspree.io/f/mgorbrlw"
 
 const reportOptions = [
   {
