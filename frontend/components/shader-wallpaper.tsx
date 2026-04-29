@@ -8,6 +8,12 @@ interface Ripple {
   time: number
 }
 
+function isMobile(): boolean {
+  if (typeof navigator === "undefined") return false
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+}
+
 export function ShaderWallpaper() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const glRef = useRef<WebGLRenderingContext | null>(null)
@@ -16,6 +22,7 @@ export function ShaderWallpaper() {
   const mouseRef = useRef({ x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5 })
   const ripplesRef = useRef<Ripple[]>([])
   const startTimeRef = useRef(Date.now())
+  const isMobileDevice = useRef(isMobile())
 
   const vertexShaderSource = `
     attribute vec2 a_position;
@@ -33,7 +40,7 @@ export function ShaderWallpaper() {
     uniform vec4 u_ripples[5];
     uniform int u_rippleCount;
     
-    // Simplex noise functions
+    // --- Optimized simplex noise ---
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -43,8 +50,7 @@ export function ShaderWallpaper() {
                          -0.577350269189626, 0.024390243902439);
       vec2 i  = floor(v + dot(v, C.yy));
       vec2 x0 = v -   i + dot(i, C.xx);
-      vec2 i1;
-      i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+      vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
       vec4 x12 = x0.xyxy + C.xxzz;
       x12.xy -= i1;
       i = mod289(i);
@@ -52,8 +58,7 @@ export function ShaderWallpaper() {
                               + i.x + vec3(0.0, i1.x, 1.0));
       vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
                               dot(x12.zw,x12.zw)), 0.0);
-      m = m*m;
-      m = m*m;
+      m = m*m; m = m*m;
       vec3 x = 2.0 * fract(p * C.www) - 1.0;
       vec3 h = abs(x) - 0.5;
       vec3 ox = floor(x + 0.5);
@@ -65,24 +70,22 @@ export function ShaderWallpaper() {
       return 130.0 * dot(m, g);
     }
     
+    // --- Optimized FBM: 3 octaves (was 5) ---
     float fbm(vec2 p) {
-      float value = 0.0;
-      float amplitude = 0.5;
-      float frequency = 1.0;
-      for (int i = 0; i < 5; i++) {
-        value += amplitude * snoise(p * frequency);
-        amplitude *= 0.5;
-        frequency *= 2.0;
+      float v = 0.0;
+      float a = 0.5;
+      for (int i = 0; i < 3; i++) {
+        v += a * snoise(p);
+        p *= 2.0;
+        a *= 0.5;
       }
-      return value;
+      return v;
     }
     
-    // Color palette - coral and teal from the theme
     vec3 coral = vec3(0.941, 0.6, 0.482);
-    vec3 teal = vec3(0.365, 0.792, 0.647);
+    vec3 teal  = vec3(0.365, 0.792, 0.647);
     vec3 darkBg = vec3(0.051, 0.059, 0.078);
-    vec3 purple = vec3(0.4, 0.2, 0.6);
-    vec3 cyan = vec3(0.2, 0.8, 0.9);
+    vec3 cyan  = vec3(0.2, 0.8, 0.9);
     
     void main() {
       vec2 uv = gl_FragCoord.xy / u_resolution;
@@ -90,43 +93,39 @@ export function ShaderWallpaper() {
       float aspect = u_resolution.x / u_resolution.y;
       centeredUv.x *= aspect;
       
-      // Mouse influence with smooth interpolation
+      // Mouse influence
       vec2 mouseInfluence = u_mouse - 0.5;
       mouseInfluence.x *= aspect;
       float mouseDist = length(centeredUv - mouseInfluence);
       float mouseGlow = smoothstep(0.8, 0.0, mouseDist) * 0.3;
       
-      // Time-based animation
       float t = u_time * 0.15;
       
-      // Multi-layered noise for organic movement
+      // --- Reduced noise layers ---
       vec2 noiseCoord = centeredUv * 2.0;
-      float noise1 = fbm(noiseCoord + vec2(t * 0.3, t * 0.2));
-      float noise2 = fbm(noiseCoord * 1.5 - vec2(t * 0.2, t * 0.4) + noise1 * 0.3);
-      float noise3 = fbm(noiseCoord * 0.5 + vec2(sin(t * 0.5), cos(t * 0.3)));
+      float n1 = fbm(noiseCoord + vec2(t * 0.3, t * 0.2));
+      float n2 = fbm(noiseCoord * 1.5 - vec2(t * 0.2, t * 0.4) + n1 * 0.3);
+      float n3 = fbm(noiseCoord * 0.5 + vec2(sin(t * 0.5), cos(t * 0.3)));
       
-      // Warped coordinates for flowing effect
-      vec2 warpedUv = centeredUv + vec2(
-        noise1 * 0.15 + mouseInfluence.x * 0.1,
-        noise2 * 0.15 + mouseInfluence.y * 0.1
-      );
+      // Warped UV
+      vec2 warpedUv = centeredUv + vec2(n1 * 0.15, n2 * 0.15);
       
-      // Create flowing gradient bands
-      float bands = sin(warpedUv.x * 3.0 + warpedUv.y * 2.0 + t * 2.0 + noise1 * 2.0) * 0.5 + 0.5;
+      // Bands
+      float bands = sin(warpedUv.x * 3.0 + warpedUv.y * 2.0 + t * 2.0 + n1 * 2.0) * 0.5 + 0.5;
       bands = smoothstep(0.3, 0.7, bands);
       
-      // Radial pulse from center
+      // Radial pulse
       float radialDist = length(centeredUv);
-      float pulse = sin(radialDist * 8.0 - t * 3.0 + noise2 * 2.0) * 0.5 + 0.5;
+      float pulse = sin(radialDist * 8.0 - t * 3.0 + n2 * 2.0) * 0.5 + 0.5;
       pulse *= smoothstep(1.2, 0.0, radialDist);
       
-      // Grid pattern with distortion
+      // Grid (simplified)
       vec2 gridUv = warpedUv * 20.0;
       float gridX = smoothstep(0.9, 1.0, abs(sin(gridUv.x * 3.14159)));
       float gridY = smoothstep(0.9, 1.0, abs(sin(gridUv.y * 3.14159)));
       float grid = max(gridX, gridY) * 0.15 * smoothstep(0.8, 0.2, radialDist);
       
-      // Calculate ripple effects
+      // Ripples
       float rippleEffect = 0.0;
       for (int i = 0; i < 5; i++) {
         if (i >= u_rippleCount) break;
@@ -134,57 +133,44 @@ export function ShaderWallpaper() {
         ripplePos.x *= aspect;
         float rippleTime = u_ripples[i].z;
         float rippleAge = u_time - rippleTime;
-        
         if (rippleAge < 3.0 && rippleAge > 0.0) {
           float rippleDist = length(centeredUv - ripplePos);
           float rippleRadius = rippleAge * 0.5;
-          float rippleWidth = 0.1;
-          float ripple = smoothstep(rippleRadius - rippleWidth, rippleRadius, rippleDist) *
-                        smoothstep(rippleRadius + rippleWidth, rippleRadius, rippleDist);
+          float ripple = smoothstep(rippleRadius - 0.1, rippleRadius, rippleDist) *
+                        smoothstep(rippleRadius + 0.1, rippleRadius, rippleDist);
           ripple *= (1.0 - rippleAge / 3.0);
           rippleEffect += ripple * 0.5;
         }
       }
       
-      // Color mixing
+      // --- Color mixing (merged layers) ---
       vec3 color = darkBg;
       
-      // Layer 1: Deep background gradient
-      float bgGrad = length(centeredUv) * 0.5;
-      color = mix(color, darkBg * 1.5, bgGrad);
-      
-      // Layer 2: Flowing color bands
+      // Background gradient + bands (merged)
+      float bgGrad = radialDist * 0.5;
       vec3 bandColor = mix(coral * 0.4, teal * 0.4, bands);
-      color = mix(color, bandColor, noise3 * 0.3 + 0.1);
+      color = mix(color, darkBg * 1.5, bgGrad);
+      color = mix(color, bandColor, n3 * 0.3 + 0.1);
       
-      // Layer 3: Radial pulse glow
-      vec3 pulseColor = mix(teal, coral, pulse);
-      color += pulseColor * pulse * 0.15;
+      // Pulse glow
+      color += mix(teal, coral, pulse) * pulse * 0.15;
       
-      // Layer 4: Mouse interaction glow
-      vec3 mouseColor = mix(coral, teal, sin(t * 0.5) * 0.5 + 0.5);
-      color += mouseColor * mouseGlow;
+      // Mouse glow
+      color += mix(coral, teal, sin(t * 0.5) * 0.5 + 0.5) * mouseGlow;
       
-      // Layer 5: Subtle grid overlay
+      // Grid
       color += vec3(grid) * teal * 0.5;
       
-      // Layer 6: Ripple highlights
-      vec3 rippleColor = mix(coral, cyan, 0.5);
-      color += rippleColor * rippleEffect;
+      // Ripples
+      color += mix(coral, cyan, 0.5) * rippleEffect;
       
-      // Layer 7: Edge vignette
+      // Vignette + grain (merged)
       float vignette = 1.0 - smoothstep(0.3, 1.0, radialDist);
       color *= vignette * 0.4 + 0.6;
+      color += snoise(gl_FragCoord.xy * 0.5 + u_time * 10.0) * 0.02;
       
-      // Layer 8: Subtle noise grain
-      float grain = snoise(gl_FragCoord.xy * 0.5 + u_time * 10.0) * 0.02;
-      color += grain;
-      
-      // Final color adjustments
-      color = pow(color, vec3(0.95)); // Slight gamma
-      color = clamp(color, 0.0, 1.0);
-      
-      gl_FragColor = vec4(color, 1.0);
+      color = pow(color, vec3(0.95));
+      gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
     }
   `
 
@@ -290,7 +276,8 @@ export function ShaderWallpaper() {
     const canvas = canvasRef.current
     if (!canvas) return
     
-    const dpr = Math.min(window.devicePixelRatio, 2)
+    // Mobile: DPR = 1 to save GPU; Desktop: cap at 2
+    const dpr = isMobileDevice.current ? 1 : Math.min(window.devicePixelRatio, 2)
     canvas.width = window.innerWidth * dpr
     canvas.height = window.innerHeight * dpr
     canvas.style.width = `${window.innerWidth}px`
@@ -316,9 +303,9 @@ export function ShaderWallpaper() {
     initWebGL()
     render()
 
-    window.addEventListener("resize", handleResize)
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("click", handleClick)
+    window.addEventListener("resize", handleResize, { passive: true })
+    window.addEventListener("mousemove", handleMouseMove, { passive: true })
+    window.addEventListener("click", handleClick, { passive: true })
 
     return () => {
       cancelAnimationFrame(animationRef.current)
@@ -332,6 +319,11 @@ export function ShaderWallpaper() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full -z-10"
+      style={{
+        touchAction: 'none',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+      }}
       aria-hidden="true"
     />
   )
