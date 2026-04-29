@@ -6,7 +6,7 @@ import * as d3 from "d3"
 import { geoOrthographic, geoPath } from "d3-geo"
 import { feature } from "topojson-client"
 import type { Topology, GeometryCollection } from "topojson-specification"
-import { MapPin, X, ExternalLink, Info } from "lucide-react"
+import { MapPin, X, ExternalLink, Info, ZoomIn, ZoomOut } from "lucide-react"
 
 export type UserWithCountry = {
   login: string
@@ -103,18 +103,31 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
     isDragging.current = false
   }, [])
 
+  // Trackpad pinch detection: on macOS/Windows trackpads, pinch sends
+  // wheel events with ctrlKey (or metaKey on some setups). We zoom ONLY
+  // in that case. Normal wheel scroll scrolls the page.
   const handleWheel = useCallback((e: WheelEvent) => {
+    const isPinch = e.ctrlKey || e.metaKey
+    if (!isPinch) return // let page scroll normally
     e.preventDefault()
-    setScale((prev) => Math.max(150, Math.min(600, prev - e.deltaY * 0.15)))
+    const delta = e.deltaY > 0 ? -20 : 20
+    setScale((prev) => Math.max(150, Math.min(600, prev + delta)))
   }, [])
 
-  // Native wheel listener with passive:false so the browser scroll doesn't hijack zoom
   useEffect(() => {
     const el = globeWrapperRef.current
     if (!el) return
     el.addEventListener("wheel", handleWheel, { passive: false })
     return () => el.removeEventListener("wheel", handleWheel)
   }, [handleWheel])
+
+  const zoomIn = useCallback(() => {
+    setScale((prev) => Math.min(600, prev + 30))
+  }, [])
+
+  const zoomOut = useCallback(() => {
+    setScale((prev) => Math.max(150, prev - 30))
+  }, [])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2) {
@@ -263,7 +276,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
             </div>
           </div>
           <p className="text-sm text-white/50 max-w-lg mx-auto">
-            Drag to rotate the globe. Click a country to explore.
+            Drag or swipe to rotate. Pinch or use the buttons to zoom.
+            Click a country to explore.
             <span className="text-coral"> Coral</span> = has women · <span className="text-teal">Teal</span> = only men.
           </p>
           {!isPerCountryData ? (
@@ -277,18 +291,39 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
           )}
         </motion.div>
 
-        <div
-          ref={globeWrapperRef}
-          className="cursor-grab active:cursor-grabbing select-none"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <svg ref={svgRef} className="w-full" style={{ minHeight: 500 }} />
+        <div className="relative">
+          <div
+            ref={globeWrapperRef}
+            className="cursor-grab active:cursor-grabbing select-none"
+            style={{ touchAction: 'none' }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <svg ref={svgRef} className="w-full" style={{ minHeight: 500 }} />
+          </div>
+
+          {/* Zoom controls */}
+          <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-10">
+            <button
+              onClick={zoomIn}
+              className="w-10 h-10 rounded-full glass-strong border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition active:scale-95"
+              aria-label="Zoom in"
+            >
+              <ZoomIn className="w-5 h-5" />
+            </button>
+            <button
+              onClick={zoomOut}
+              className="w-10 h-10 rounded-full glass-strong border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition active:scale-95"
+              aria-label="Zoom out"
+            >
+              <ZoomOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center justify-center gap-6 mt-4 text-xs text-white/40">
