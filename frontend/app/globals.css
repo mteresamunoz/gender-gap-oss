@@ -66,17 +66,21 @@
 }
 
 @layer base {
-  * {
+  *, *::before, *::after {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
   html {
     background-color: #0D0F14;
+    overflow-x: hidden;
   }
   body {
     @apply text-foreground;
     background: transparent;
     font-family: var(--font-body), 'Space Grotesk', system-ui, sans-serif;
     font-weight: 300;
+    overflow-x: hidden;
+    min-height: 100vh;
   }
   h1, h2, h3 {
     font-family: var(--font-display), 'Chakra Petch', system-ui, sans-serif;

@@ -110,7 +110,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
               onClick={() => handleCardClick(user)}
               className={`
                 group relative flex-shrink-0 flex flex-col items-center
-                rounded-2xl p-5 min-w-[160px] md:min-w-[180px]
+                rounded-2xl p-5 min-w-[140px] md:min-w-[180px]
                 border border-coral/20 bg-coral/[0.03]
                 hover:border-coral/50 hover:bg-coral/[0.07]
                 transition-all duration-300 cursor-pointer

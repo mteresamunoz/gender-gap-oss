@@ -61,7 +61,7 @@ export default function HomePage() {
   const hasContributorData = contributorTimeline.length > 0
 
   return (
-    <main className="min-h-screen relative">
+    <main className="min-h-screen relative overflow-x-hidden">
       <ShaderWallpaper />
 
       <HeroSection

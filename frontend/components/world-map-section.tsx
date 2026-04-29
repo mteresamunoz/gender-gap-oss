@@ -38,13 +38,25 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
   const svgRef = useRef<SVGSVGElement>(null)
   const [worldData, setWorldData] = useState<Topology | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
-  const [rotation, setRotation] = useState<[number, number]>([0, -20])
-  const [scale, setScale] = useState(280)
-  const isDragging = useRef(false)
-  const lastPos = useRef<[number, number]>([0, 0])
-  const isInView = useRef(false)
-  const touchStartDist = useRef<number | null>(null)
+
+  // ── Mutable refs for high-frequency updates (no React re-renders) ──
+  const rotationRef = useRef<[number, number]>([0, -20])
+  const scaleRef = useRef(280)
+  const isDraggingRef = useRef(false)
+  const lastPosRef = useRef<[number, number]>([0, 0])
+  const isInViewRef = useRef(false)
+  const touchStartDistRef = useRef<number | null>(null)
   const globeWrapperRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef<number>(0)
+
+  // D3 refs — persisted across renders
+  const projectionRef = useRef<d3.GeoProjection | null>(null)
+  const pathRef = useRef<d3.GeoPath | null>(null)
+  const countryPathsRef = useRef<d3.Selection<SVGPathElement, any, SVGGElement, unknown> | null>(null)
+  const outlineRef = useRef<d3.Selection<SVGCircleElement, unknown, SVGGElement, unknown> | null>(null)
+  const oceanRef = useRef<d3.Selection<SVGCircleElement, unknown, SVGGElement, unknown> | null>(null)
+  const sizeRef = useRef({ width: 0, height: 0 })
+  const isInitRef = useRef(false)
 
   const byCountry = useMemo(() => {
     const map: Record<string, { all: UserWithCountry[]; women: UserWithCountry[] }> = {}
@@ -64,130 +76,38 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       .catch(console.error)
   }, [])
 
-  // Auto-rotate when not interacting
+  // ── Initialise D3 globe ONCE when data arrives ──
   useEffect(() => {
-    if (!isInView.current || isDragging.current) return
-    const interval = setInterval(() => {
-      setRotation((prev) => [(prev[0] + 0.15) % 360, prev[1]])
-    }, 50)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Intersection observer for auto-rotate
-  useEffect(() => {
-    if (!containerRef.current) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isInView.current = entry.isIntersecting
-      },
-      { threshold: 0.1 }
-    )
-    observer.observe(containerRef.current)
-    return () => observer.disconnect()
-  }, [])
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    isDragging.current = true
-    lastPos.current = [e.clientX, e.clientY]
-  }, [])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging.current) return
-    const dx = e.clientX - lastPos.current[0]
-    const dy = e.clientY - lastPos.current[1]
-    setRotation((prev) => [prev[0] + dx * 0.5, Math.max(-90, Math.min(90, prev[1] - dy * 0.5))])
-    lastPos.current = [e.clientX, e.clientY]
-  }, [])
-
-  const handleMouseUp = useCallback(() => {
-    isDragging.current = false
-  }, [])
-
-  // Trackpad pinch detection: on macOS/Windows trackpads, pinch sends
-  // wheel events with ctrlKey (or metaKey on some setups). We zoom ONLY
-  // in that case. Normal wheel scroll scrolls the page.
-  const handleWheel = useCallback((e: WheelEvent) => {
-    const isPinch = e.ctrlKey || e.metaKey
-    if (!isPinch) return // let page scroll normally
-    e.preventDefault()
-    const delta = e.deltaY > 0 ? -20 : 20
-    setScale((prev) => Math.max(150, Math.min(600, prev + delta)))
-  }, [])
-
-  useEffect(() => {
-    const el = globeWrapperRef.current
-    if (!el) return
-    el.addEventListener("wheel", handleWheel, { passive: false })
-    return () => el.removeEventListener("wheel", handleWheel)
-  }, [handleWheel])
-
-  const zoomIn = useCallback(() => {
-    setScale((prev) => Math.min(600, prev + 30))
-  }, [])
-
-  const zoomOut = useCallback(() => {
-    setScale((prev) => Math.max(150, prev - 30))
-  }, [])
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX
-      const dy = e.touches[0].clientY - e.touches[1].clientY
-      touchStartDist.current = Math.sqrt(dx * dx + dy * dy)
-    } else if (e.touches.length === 1) {
-      isDragging.current = true
-      lastPos.current = [e.touches[0].clientX, e.touches[0].clientY]
-    }
-  }, [])
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 2 && touchStartDist.current !== null) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX
-      const dy = e.touches[0].clientY - e.touches[1].clientY
-      const newDist = Math.sqrt(dx * dx + dy * dy)
-      const ratio = newDist / touchStartDist.current
-      touchStartDist.current = newDist
-      setScale((prev) => Math.max(150, Math.min(600, prev * ratio)))
-    } else if (e.touches.length === 1 && isDragging.current) {
-      const dx = e.touches[0].clientX - lastPos.current[0]
-      const dy = e.touches[0].clientY - lastPos.current[1]
-      setRotation((prev) => [prev[0] + dx * 0.5, Math.max(-90, Math.min(90, prev[1] - dy * 0.5))])
-      lastPos.current = [e.touches[0].clientX, e.touches[0].clientY]
-    }
-  }, [])
-
-  const handleTouchEnd = useCallback(() => {
-    isDragging.current = false
-    touchStartDist.current = null
-  }, [])
-
-  // Render globe
-  useEffect(() => {
-    if (!worldData || !svgRef.current) return
+    if (!worldData || !svgRef.current || isInitRef.current) return
+    isInitRef.current = true
 
     const svg = d3.select(svgRef.current)
     svg.selectAll("*").remove()
 
-    const width = svgRef.current.clientWidth
+    const width = svgRef.current.clientWidth || 800
     const height = Math.max(500, width * 0.6)
+    sizeRef.current = { width, height }
     svg.attr("width", width).attr("height", height)
 
     const projection = geoOrthographic()
-      .scale(scale)
+      .scale(scaleRef.current)
       .translate([width / 2, height / 2])
-      .rotate(rotation)
+      .rotate(rotationRef.current)
+    projectionRef.current = projection
+
     const path = geoPath().projection(projection)
+    pathRef.current = path
 
     const countries = feature(
       worldData,
       worldData.objects.countries as GeometryCollection
     ).features
 
-    // Ocean background
-    svg.append("circle")
+    // Ocean
+    oceanRef.current = svg.append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
-      .attr("r", scale)
+      .attr("r", scaleRef.current)
       .attr("fill", "rgba(255,255,255,0.08)")
       .attr("stroke", "rgba(255,255,255,0.25)")
       .attr("stroke-width", 1)
@@ -203,7 +123,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       return "rgba(255,255,255,0.12)"
     }
 
-    svg.selectAll("path.country")
+    // Country paths — created once, updated later
+    countryPathsRef.current = svg.selectAll<SVGPathElement, any>("path.country")
       .data(countries)
       .enter()
       .append("path")
@@ -237,14 +158,173 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
       })
 
     // Globe outline
-    svg.append("circle")
+    outlineRef.current = svg.append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
-      .attr("r", scale)
+      .attr("r", scaleRef.current)
       .attr("fill", "none")
       .attr("stroke", "rgba(255,255,255,0.30)")
       .attr("stroke-width", 1.5)
-  }, [worldData, rotation, scale, byCountry])
+
+    // Start the render loop
+    startRenderLoop()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [worldData, byCountry])
+
+  // ── Render loop: rAF, updates projection + paths without React re-render ──
+  const startRenderLoop = useCallback(() => {
+    const loop = () => {
+      const projection = projectionRef.current
+      const path = pathRef.current
+      const countryPaths = countryPathsRef.current
+      const outline = outlineRef.current
+      const ocean = oceanRef.current
+      const { width, height } = sizeRef.current
+
+      if (!projection || !path || !countryPaths || !outline || !ocean || width === 0) {
+        rafRef.current = requestAnimationFrame(loop)
+        return
+      }
+
+      // Auto-rotate when not interacting
+      if (isInViewRef.current && !isDraggingRef.current) {
+        rotationRef.current[0] = (rotationRef.current[0] + 0.15) % 360
+      }
+
+      // Update projection
+      projection
+        .scale(scaleRef.current)
+        .rotate(rotationRef.current)
+
+      // Update paths (only the 'd' attribute — no DOM recreation)
+      countryPaths.attr("d", path as any)
+
+      // Update outline + ocean circles
+      const r = scaleRef.current
+      outline.attr("r", r)
+      ocean.attr("r", r)
+
+      rafRef.current = requestAnimationFrame(loop)
+    }
+    rafRef.current = requestAnimationFrame(loop)
+  }, [])
+
+  // Stop loop on unmount
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+
+  // Resize handler
+  const handleResize = useCallback(() => {
+    if (!svgRef.current || !projectionRef.current || !outlineRef.current || !oceanRef.current) return
+    const width = svgRef.current.clientWidth || 800
+    const height = Math.max(500, width * 0.6)
+    sizeRef.current = { width, height }
+    d3.select(svgRef.current).attr("width", width).attr("height", height)
+    projectionRef.current.translate([width / 2, height / 2])
+    outlineRef.current.attr("cx", width / 2).attr("cy", height / 2)
+    oceanRef.current.attr("cx", width / 2).attr("cy", height / 2)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize, { passive: true })
+    return () => window.removeEventListener("resize", handleResize)
+  }, [handleResize])
+
+  // Intersection observer for auto-rotate
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting
+      },
+      { threshold: 0.1 }
+    )
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  // ── Interaction handlers (write to refs, NOT React state) ──
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    isDraggingRef.current = true
+    lastPosRef.current = [e.clientX, e.clientY]
+  }, [])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDraggingRef.current) return
+    const dx = e.clientX - lastPosRef.current[0]
+    const dy = e.clientY - lastPosRef.current[1]
+    rotationRef.current = [
+      rotationRef.current[0] + dx * 0.5,
+      Math.max(-90, Math.min(90, rotationRef.current[1] - dy * 0.5)),
+    ]
+    lastPosRef.current = [e.clientX, e.clientY]
+  }, [])
+
+  const handleMouseUp = useCallback(() => {
+    isDraggingRef.current = false
+  }, [])
+
+  // Trackpad pinch: only zoom when ctrlKey / metaKey is present
+  const handleWheel = useCallback((e: WheelEvent) => {
+    const isPinch = e.ctrlKey || e.metaKey
+    if (!isPinch) return // let page scroll
+    e.preventDefault()
+    const delta = e.deltaY > 0 ? -20 : 20
+    scaleRef.current = Math.max(150, Math.min(600, scaleRef.current + delta))
+  }, [])
+
+  useEffect(() => {
+    const el = globeWrapperRef.current
+    if (!el) return
+    el.addEventListener("wheel", handleWheel, { passive: false })
+    return () => el.removeEventListener("wheel", handleWheel)
+  }, [handleWheel])
+
+  const zoomIn = useCallback(() => {
+    scaleRef.current = Math.min(600, scaleRef.current + 30)
+  }, [])
+
+  const zoomOut = useCallback(() => {
+    scaleRef.current = Math.max(150, scaleRef.current - 30)
+  }, [])
+
+  // Touch: single finger = rotate, two fingers = pinch zoom
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      touchStartDistRef.current = Math.sqrt(dx * dx + dy * dy)
+    } else if (e.touches.length === 1) {
+      isDraggingRef.current = true
+      lastPosRef.current = [e.touches[0].clientX, e.touches[0].clientY]
+    }
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchStartDistRef.current !== null) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      const newDist = Math.sqrt(dx * dx + dy * dy)
+      const ratio = newDist / touchStartDistRef.current
+      touchStartDistRef.current = newDist
+      scaleRef.current = Math.max(150, Math.min(600, scaleRef.current * ratio))
+    } else if (e.touches.length === 1 && isDraggingRef.current) {
+      const dx = e.touches[0].clientX - lastPosRef.current[0]
+      const dy = e.touches[0].clientY - lastPosRef.current[1]
+      rotationRef.current = [
+        rotationRef.current[0] + dx * 0.5,
+        Math.max(-90, Math.min(90, rotationRef.current[1] - dy * 0.5)),
+      ]
+      lastPosRef.current = [e.touches[0].clientX, e.touches[0].clientY]
+    }
+  }, [])
+
+  const handleTouchEnd = useCallback(() => {
+    isDraggingRef.current = false
+    touchStartDistRef.current = null
+  }, [])
 
   const selectedData = selectedCountry ? byCountry[selectedCountry] : null
 
@@ -304,7 +384,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <svg ref={svgRef} className="w-full" style={{ minHeight: 500 }} />
+            <svg ref={svgRef} className="w-full" style={{ minHeight: 500, maxWidth: '100%' }} />
           </div>
 
           {/* Zoom controls */}

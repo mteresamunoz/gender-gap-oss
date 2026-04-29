@@ -323,6 +323,7 @@ export function ShaderWallpaper() {
         touchAction: 'none',
         maxWidth: '100vw',
         maxHeight: '100vh',
+        willChange: 'transform',
       }}
       aria-hidden="true"
     />
