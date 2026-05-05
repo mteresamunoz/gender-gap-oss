@@ -85,7 +85,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
             <span className="text-4xl font-serif font-bold text-coral">
               {women.length}
             </span>
-            <span className="text-sm text-white/40 block">women</span>
+            <span className="text-sm text-white font-semibold block">women</span>
           </div>
         </div>
       </div>

@@ -64,7 +64,7 @@ export function HeroSection({
           transition={{ duration: 0.8, delay: 2 }}
           className="mt-8"
         >
-          <span className="inline-block px-4 py-1.5 text-xs font-sans uppercase tracking-widest text-muted-foreground border border-white/10 rounded-full glass">
+          <span className="text-xs font-sans uppercase tracking-[0.2em] text-coral/90 font-semibold">
             Where are the women?
           </span>
         </motion.div>
