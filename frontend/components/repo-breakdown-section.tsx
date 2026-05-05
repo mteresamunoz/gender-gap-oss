@@ -174,6 +174,13 @@ export function RepoBreakdownSection({
                 >
                   By commits
                 </button>
+                <div className="relative group">
+                  <Info className="w-4 h-4 text-white/50 hover:text-white/80 transition cursor-help" />
+                  <div className="absolute right-0 bottom-full mb-2 w-64 p-3 rounded-xl bg-[#1E2130]/95 border border-white/20 text-xs text-white/95 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 font-medium shadow-2xl backdrop-blur-xl">
+                    <span className="text-coral font-semibold">By people</span> counts each contributor once, regardless of how much they coded.<br /><br />
+                    <span className="text-coral font-semibold">By commits</span> weights each person by their actual commit volume.
+                  </div>
+                </div>
               </div>
             </div>
 
