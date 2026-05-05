@@ -365,8 +365,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
               Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
             </p>
           ) : (
-            <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
-              Showing top 100 users per country by followers. <span className="text-teal">Data collected via GitHub API.</span>
+            <p className="text-xs text-white/85 max-w-lg mx-auto mt-2 font-bold">
+              Showing top 100 users per country by followers. <span className="text-teal font-bold">Data collected via GitHub API.</span>
             </p>
           )}
         </motion.div>
