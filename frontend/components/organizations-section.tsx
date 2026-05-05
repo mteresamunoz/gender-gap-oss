@@ -115,10 +115,10 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
               </div>
             </div>
           </div>
-          <p className="text-white/50 max-w-xl mx-auto text-sm">
+          <p className="text-white/90 max-w-xl mx-auto text-sm font-bold">
             {orgs.length} organisation accounts with public member data.{" "}
             {hasOrgData && (
-              <span className="text-coral">
+              <span className="text-coral font-bold">
                 Click any org to see gender diversity among their public members.
               </span>
             )}
