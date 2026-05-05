@@ -64,25 +64,25 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
         </motion.div>
 
         <div className="mt-12 pt-8 border-t border-border text-center space-y-2">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-white/90 font-medium">
             Built by{" "}
             <a
               href="https://github.com/mteresamunoz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2"
+              className="text-coral font-semibold hover:text-coral transition-colors underline underline-offset-2"
             >
               @mteresamunoz
             </a>
             {" · "}
-            <span className="text-white/40">
+            <span className="text-white/85">
               Spot an error? Use the{" "}
               <button
                 onClick={() => {
                   const evt = new CustomEvent("open-report-modal")
                   window.dispatchEvent(evt)
                 }}
-                className="text-coral/70 hover:text-coral transition-colors underline underline-offset-2 bg-transparent border-none p-0 cursor-pointer"
+                className="text-coral font-semibold hover:text-coral transition-colors underline underline-offset-2 bg-transparent border-none p-0 cursor-pointer"
               >
                 floating button
               </button>
