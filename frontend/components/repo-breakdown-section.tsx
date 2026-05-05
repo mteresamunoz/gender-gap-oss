@@ -117,8 +117,8 @@ export function RepoBreakdownSection({
               Gender by Repository
             </h2>
             <div className="relative group">
-              <Info className="w-5 h-5 text-white/30 hover:text-white/60 transition cursor-help" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 rounded-lg glass-strong border border-white/10 text-xs text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <Info className="w-5 h-5 text-white/50 hover:text-white/80 transition cursor-help" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 p-4 rounded-xl bg-[#1E2130]/95 border border-white/20 text-xs text-white/95 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 font-medium shadow-2xl backdrop-blur-xl">
                 Based on commit history from the top contributors of 20 curated open-source AI repositories. Click any repo to see the yearly breakdown.
               </div>
             </div>
@@ -433,12 +433,12 @@ export function RepoBreakdownSection({
 
                                   {/* Tooltip */}
                                   <div className="absolute -top-20 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                    <div className="glass-strong border border-white/10 px-3 py-2 rounded text-xs whitespace-nowrap">
-                                      <div className="font-serif font-bold text-foreground">{year.year}</div>
-                                      <div className="text-coral">{fCommit.toFixed(1)}% women</div>
-                                      <div className="text-teal">{mCommit.toFixed(1)}% men</div>
+                                    <div className="bg-[#1E2130]/95 border border-white/20 px-4 py-3 rounded-xl text-xs whitespace-nowrap shadow-2xl backdrop-blur-xl">
+                                      <div className="font-serif font-bold text-white">{year.year}</div>
+                                      <div className="text-coral font-semibold">{fCommit.toFixed(1)}% women</div>
+                                      <div className="text-teal font-semibold">{mCommit.toFixed(1)}% men</div>
                                       {uCommit > 0 && (
-                                        <div className="text-muted-foreground">{uCommit.toFixed(1)}% unclassified</div>
+                                        <div className="text-white/80 font-medium">{uCommit.toFixed(1)}% unclassified</div>
                                       )}
                                     </div>
                                   </div>

@@ -349,8 +349,8 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
               By Country
             </h2>
             <div className="relative group">
-              <Info className="w-5 h-5 text-white/30 hover:text-white/60 transition cursor-help" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 p-3 rounded-lg glass-strong border border-white/10 text-xs text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <Info className="w-5 h-5 text-white/50 hover:text-white/80 transition cursor-help" />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-80 p-4 rounded-xl bg-[#1E2130]/95 border border-white/20 text-xs text-white/95 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 font-medium shadow-2xl backdrop-blur-xl">
                 Only users who have a location set on their GitHub profile are shown. Countries are colored based on the gender breakdown of those users{isPerCountryData ? ' in our per-country top 100 sample' : ' within our top 500 sample'}.
               </div>
             </div>
@@ -361,7 +361,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
             <span className="text-coral"> Coral</span> = has women · <span className="text-teal">Teal</span> = only men.
           </p>
           {!isPerCountryData ? (
-            <p className="text-xs text-white/70 max-w-lg mx-auto mt-2 font-medium">
+            <p className="text-xs text-white/85 max-w-lg mx-auto mt-2 font-medium">
               Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
             </p>
           ) : (

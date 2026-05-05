@@ -68,11 +68,11 @@ export function TimelineComingSoon() {
 
                 {/* Hover tooltip with dashes */}
                 <div className="absolute -top-14 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                  <div className="glass-strong border border-white/10 px-3 py-2 rounded text-xs whitespace-nowrap">
+                  <div className="bg-[#1E2130]/95 border border-white/20 px-4 py-3 rounded-xl text-xs whitespace-nowrap shadow-2xl backdrop-blur-xl">
                     <div className="font-serif font-bold text-white">{year}</div>
-                    <div className="text-coral">Women: —%</div>
-                    <div className="text-teal">Men: —%</div>
-                    <div className="text-white/75 font-medium">Unclassified: —</div>
+                    <div className="text-coral font-semibold">Women: —%</div>
+                    <div className="text-teal font-semibold">Men: —%</div>
+                    <div className="text-white/80 font-medium">Unclassified: —</div>
                   </div>
                 </div>
               </div>

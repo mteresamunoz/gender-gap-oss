@@ -151,12 +151,12 @@ export function TimelineSection({ data, variant = "account_creation" }: Timeline
 
                     {/* Tooltip on hover */}
                     <div className="absolute -top-24 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                      <div className="glass-strong border border-white/10 px-3 py-2 rounded text-xs whitespace-nowrap">
-                        <div className="font-serif font-bold text-foreground">{y}</div>
-                        <div className="text-coral">{tooltipFemale}</div>
-                        <div className="text-teal">{tooltipMale}</div>
+                      <div className="bg-[#1E2130]/95 border border-white/20 px-4 py-3 rounded-xl text-xs whitespace-nowrap shadow-2xl backdrop-blur-xl">
+                        <div className="font-serif font-bold text-white">{y}</div>
+                        <div className="text-coral font-semibold">{tooltipFemale}</div>
+                        <div className="text-teal font-semibold">{tooltipMale}</div>
                         {unknown > 0 && (
-                          <div className="text-muted-foreground">{tooltipUnknown}</div>
+                          <div className="text-white/80 font-medium">{tooltipUnknown}</div>
                         )}
                       </div>
                     </div>
