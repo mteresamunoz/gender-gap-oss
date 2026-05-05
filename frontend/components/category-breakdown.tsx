@@ -42,7 +42,7 @@ export function CategoryBreakdown() {
           <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Where is the gap biggest?
           </h2>
-          <p className="text-white/70 max-w-xl mx-auto">
+          <p className="text-white/90 max-w-xl mx-auto font-medium">
             Breaking down gender representation across AI categories on Hugging Face.
           </p>
         </motion.div>
@@ -58,10 +58,10 @@ export function CategoryBreakdown() {
               className="space-y-2"
             >
               <div className="flex justify-between items-baseline">
-                <span className="text-sm font-sans text-white/60 uppercase tracking-wider">
+                <span className="text-sm font-sans text-white/85 uppercase tracking-wider font-semibold">
                   {name}
                 </span>
-                <span className="font-serif text-lg text-white/30">—%</span>
+                <span className="font-serif text-lg text-white/60 font-medium">—%</span>
               </div>
               <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                 <motion.div
@@ -81,7 +81,7 @@ export function CategoryBreakdown() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-12 p-6 glass rounded-lg border border-white/10"
         >
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-white/80 font-medium">
             Based on Hugging Face model pipeline tags. Data collection in progress.
           </p>
         </motion.div>

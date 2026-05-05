@@ -32,12 +32,12 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
           <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-4">
             Where Are The Women?
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+          <p className="text-white/85 max-w-xl mx-auto mb-8 font-medium">
             A data journalism project exploring gender representation in open source AI.
             Data sourced from GitHub and Hugging Face APIs.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground mb-12">
+          <div className="flex flex-wrap justify-center gap-8 text-sm text-white/80 font-medium mb-12">
             <div>
               <span className="block text-xs uppercase tracking-widest mb-1">Data Updated</span>
               <span className="text-foreground">{displayYear}</span>
@@ -51,13 +51,13 @@ export function FooterSection({ totalAnalyzed, snapshotDate }: FooterSectionProp
 
           <div className="flex justify-center gap-4">
             <span className="inline-block w-3 h-3 rounded-full bg-coral" />
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-white/80 font-medium">
               Coral = women
             </span>
           </div>
           <div className="flex justify-center gap-4 mt-2">
             <span className="inline-block w-3 h-3 rounded-full bg-teal" />
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-white/80 font-medium">
               Teal = men
             </span>
           </div>

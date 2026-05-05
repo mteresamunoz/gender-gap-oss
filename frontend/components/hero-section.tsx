@@ -40,7 +40,7 @@ export function HeroSection({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.5 }}
-          className="font-sans text-lg md:text-xl text-white/80 max-w-xl mx-auto leading-relaxed"
+          className="font-sans text-lg md:text-xl text-white max-w-xl mx-auto leading-relaxed font-medium"
         >
           are women among the{" "}
           <span className="text-foreground font-light">top {totalAnalyzed} most followed</span>{" "}
@@ -51,7 +51,7 @@ export function HeroSection({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.7 }}
-          className="font-sans text-sm text-white/60 mt-3 max-w-md mx-auto"
+          className="font-sans text-sm text-white/85 mt-3 max-w-md mx-auto font-medium"
         >
           {femaleCount} of {classifiedCount} profiles identified as individual people. The remaining{" "}
           {totalAnalyzed - classifiedCount}{" "}are organisation accounts or profiles whose name

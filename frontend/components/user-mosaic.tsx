@@ -47,7 +47,7 @@ export function UserMosaic({ users }: UserMosaicProps) {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Users className="w-4 h-4 text-coral/80" />
-              <h2 className="font-serif text-2xl md:text-3xl text-foreground">
+              <h2 className="font-serif text-2xl md:text-3xl text-white">
                 The Top 500
               </h2>
             </div>

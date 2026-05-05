@@ -17,7 +17,7 @@
   --secondary: oklch(0.75 0.12 165);
   --secondary-foreground: oklch(0.08 0.01 260);
   --muted: oklch(0.16 0.01 260);
-  --muted-foreground: oklch(0.75 0.01 260);
+  --muted-foreground: oklch(0.88 0.01 260);
   --accent: oklch(0.75 0.12 165);
   --accent-foreground: oklch(0.08 0.01 260);
   --destructive: oklch(0.55 0.2 25);
@@ -117,47 +117,47 @@ html, body {
 
 /* Glassmorphism utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .glass-strong {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .glass-coral {
-  background: linear-gradient(135deg, rgba(240, 153, 123, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, rgba(240, 153, 123, 0.18), rgba(255, 255, 255, 0.12));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(240, 153, 123, 0.2);
+  border: 1px solid rgba(240, 153, 123, 0.35);
 }
 
 .glass-teal {
-  background: linear-gradient(135deg, rgba(93, 202, 165, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, rgba(93, 202, 165, 0.18), rgba(255, 255, 255, 0.12));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(93, 202, 165, 0.2);
+  border: 1px solid rgba(93, 202, 165, 0.35);
 }
 
 /* Liquid glass effect */
 .liquid-glass {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.16) 100%
   );
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 
-    0 8px 32px 0 rgba(0, 0, 0, 0.37),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 8px 32px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 /* Glow effects */

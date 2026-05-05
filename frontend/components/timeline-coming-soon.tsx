@@ -38,7 +38,7 @@ export function TimelineComingSoon() {
           <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Has the gap narrowed over time?
           </h2>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p className="text-white/90 max-w-2xl mx-auto font-medium">
             Year-by-year breakdown of actual GitHub contributions from contributors to key AI repositories.
           </p>
         </motion.div>
@@ -72,17 +72,17 @@ export function TimelineComingSoon() {
                     <div className="font-serif font-bold text-white">{year}</div>
                     <div className="text-coral">Women: —%</div>
                     <div className="text-teal">Men: —%</div>
-                    <div className="text-white/50">Unclassified: —</div>
+                    <div className="text-white/75 font-medium">Unclassified: —</div>
                   </div>
                 </div>
               </div>
-              <span className="text-xs font-sans text-white/50">{year}</span>
+              <span className="text-xs font-sans text-white/80 font-medium">{year}</span>
             </motion.div>
           ))}
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-6 mt-8 text-xs text-white/50">
+        <div className="flex justify-center gap-6 mt-8 text-xs text-white/80 font-medium">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-coral/30" />
             <span>Women</span>
@@ -101,7 +101,7 @@ export function TimelineComingSoon() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center text-xs text-white/40 mt-6 max-w-xl mx-auto italic"
+          className="text-center text-xs text-white/70 mt-6 max-w-xl mx-auto italic font-medium"
         >
           Based on GitHub&apos;s contributionsCollection GraphQL API. Data loading in progress.
         </motion.p>

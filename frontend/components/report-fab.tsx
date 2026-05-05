@@ -187,7 +187,7 @@ export function ReportFAB() {
                           <span className="block text-sm font-semibold text-foreground">
                             {opt.label}
                           </span>
-                          <span className="block text-xs text-white/40 mt-0.5">
+                          <span className="block text-xs text-white/75 mt-0.5 font-medium">
                             {opt.description}
                           </span>
                         </button>
@@ -200,7 +200,7 @@ export function ReportFAB() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                       {/* GitHub username */}
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-white/40 mb-1.5">
+                        <label className="block text-xs uppercase tracking-widest text-white/80 mb-1.5 font-semibold">
                           GitHub username
                         </label>
                         <input
@@ -217,7 +217,7 @@ export function ReportFAB() {
                       {selectedType === "gender_wrong" && (
                         <>
                           <div>
-                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-1.5">
+                            <label className="block text-xs uppercase tracking-widest text-white/80 mb-1.5 font-semibold">
                               Currently shown as
                             </label>
                             <input
@@ -291,7 +291,7 @@ export function ReportFAB() {
                         </button>
                       </div>
 
-                      <p className="text-[10px] text-white/30 text-center">
+                      <p className="text-[10px] text-white/60 text-center font-medium">
                         Or email us directly at{" "}
                         <a href="mailto:gendergapintech@gmail.com" className="text-coral/60 hover:text-coral transition">
                           gendergapintech@gmail.com

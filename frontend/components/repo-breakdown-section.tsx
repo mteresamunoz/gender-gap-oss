@@ -123,7 +123,7 @@ export function RepoBreakdownSection({
               </div>
             </div>
           </div>
-          <p className="text-white/50 max-w-xl mx-auto text-sm">
+          <p className="text-white/85 max-w-xl mx-auto text-sm font-medium">
             {hasData
               ? `${repoStats.length} repositories analyzed. `
               : "Repository data is being collected. "}
@@ -203,8 +203,8 @@ export function RepoBreakdownSection({
                       group relative flex flex-col items-center rounded-xl p-4
                       border transition-all duration-200
                       ${hasWomen
-                        ? "border-coral/20 bg-coral/[0.02] hover:border-coral/40 hover:bg-coral/[0.05]"
-                        : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
+                        ? "border-coral/35 bg-coral/[0.10] hover:border-coral/55 hover:bg-coral/[0.15]"
+                        : "border-white/15 bg-white/[0.08] hover:border-white/30 hover:bg-white/[0.12]"
                       }
                       cursor-pointer
                     `}
@@ -214,14 +214,14 @@ export function RepoBreakdownSection({
                     )}
 
                     <div className="flex items-center gap-1.5 mb-1">
-                      <span className="text-xs font-medium text-foreground text-center truncate max-w-[140px]">
+                      <span className="text-sm font-semibold text-foreground text-center truncate max-w-[140px]">
                         {repoName(stat.repo)}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-1 mb-2">
                       {CATEGORY_ICON[category] || null}
-                      <span className="text-[10px] text-white/30">
+                      <span className="text-[10px] text-white/70 font-medium">
                         {CATEGORY_LABEL[category] || category}
                       </span>
                     </div>
@@ -235,15 +235,15 @@ export function RepoBreakdownSection({
                       </div>
                     </div>
 
-                    <div className="text-[10px] text-white/40 text-center">
+                    <div className="text-[10px] text-white/75 text-center font-medium">
                       {stat.total_contributors} contributors
                     </div>
                     {stat.female > 0 ? (
-                      <div className="text-[10px] text-coral font-medium">
+                      <div className="text-[10px] text-coral font-bold">
                         {stat.female} women
                       </div>
                     ) : (
-                      <div className="text-[10px] text-white/20">No women detected</div>
+                      <div className="text-[10px] text-white/60 font-medium">No women detected</div>
                     )}
                   </motion.button>
                 )

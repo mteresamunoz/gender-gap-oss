@@ -10,6 +10,7 @@ import time
 import requests
 
 TOP_N = 500
+OVERFETCH = 60  # fetch extra logins to account for API failures (deleted/suspended/private accounts)
 RAW_PATH = os.path.join(os.path.dirname(__file__), "..", "raw", "github_users.json")
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
@@ -191,17 +192,32 @@ def fetch_pronouns_batch(logins):
 
 
 def main():
-    print(f"Fetching top {TOP_N} GitHub logins by followers...")
-    logins = fetch_top_logins(TOP_N)
-    print(f"Got {len(logins)} logins. Fetching profile details...")
+    target = TOP_N
+    buffer = OVERFETCH
+    print(f"Fetching top {target} GitHub logins by followers (with {buffer} buffer for failures)...")
+    logins = fetch_top_logins(target + buffer)
+    print(f"Got {len(logins)} logins. Fetching profile details until we have {target} valid profiles...")
 
     profiles = []
+    failed = 0
     for i, login in enumerate(logins, 1):
         print(f"  {i}/{len(logins)}: @{login}")
         profile = get_profile(login)
         if profile:
             profiles.append(profile)
+            if len(profiles) >= target:
+                print(f"\nReached target of {target} valid profiles. Stopping early.")
+                break
+        else:
+            failed += 1
+            print(f"    ! failed (total failures: {failed})")
         time.sleep(0.3)
+
+    if len(profiles) < target:
+        print(f"\nWARNING: Only got {len(profiles)} valid profiles out of {target} requested.")
+        print(f"  Failed logins: {failed}")
+    else:
+        print(f"\nSuccessfully collected {len(profiles)} valid profiles ({failed} failed).")
 
     # Fetch pronouns via GraphQL (up to 100 per batch)
     print(f"\nFetching pronouns via GraphQL for {len(profiles)} profiles...")

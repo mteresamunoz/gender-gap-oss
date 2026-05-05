@@ -59,7 +59,7 @@ export function TimelineSection({ data, variant = "account_creation" }: Timeline
               <Info className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-white/70 max-w-2xl mx-auto">{subtitle}</p>
+          <p className="text-white/90 max-w-2xl mx-auto font-medium">{subtitle}</p>
         </motion.div>
 
         {data.length === 0 ? (
@@ -169,7 +169,7 @@ export function TimelineSection({ data, variant = "account_creation" }: Timeline
         )}
 
         {/* Legend */}
-        <div className="flex justify-center gap-6 mt-8 text-xs text-muted-foreground">
+        <div className="flex justify-center gap-6 mt-8 text-xs text-white/80 font-medium">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-coral" />
             <span>Women</span>
@@ -188,7 +188,7 @@ export function TimelineSection({ data, variant = "account_creation" }: Timeline
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center text-xs text-muted-foreground/70 mt-6 max-w-xl mx-auto italic"
+          className="text-center text-xs text-white/70 mt-6 max-w-xl mx-auto italic font-medium"
         >
           {footnote}
         </motion.p>

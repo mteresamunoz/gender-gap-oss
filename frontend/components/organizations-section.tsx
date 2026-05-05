@@ -200,8 +200,8 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                   group relative flex flex-col items-center rounded-xl p-4
                   border transition-all duration-200
                   ${hasWomen
-                    ? "border-coral/30 bg-coral/[0.03] hover:border-coral/50 hover:bg-coral/[0.07]"
-                    : "border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
+                    ? "border-coral/40 bg-coral/[0.10] hover:border-coral/60 hover:bg-coral/[0.15]"
+                    : "border-white/15 bg-white/[0.08] hover:border-white/30 hover:bg-white/[0.12]"
                   }
                   ${hasOrgData ? "cursor-pointer" : "cursor-default"}
                 `}
@@ -221,20 +221,20 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                   <div className="w-12 h-12 rounded-full bg-white/5 ring-1 ring-white/10 mb-3" />
                 )}
 
-                <span className="text-xs font-light text-foreground text-center truncate w-full">
+                <span className="text-xs font-medium text-foreground text-center truncate w-full">
                   {org.name || org.login}
                 </span>
-                <span className="text-[10px] text-white/30 text-center">
+                <span className="text-[10px] text-white/70 text-center font-medium">
                   @{org.login}
                 </span>
 
-                <div className="flex items-center gap-1 mt-1 text-[10px] text-white/30">
+                <div className="flex items-center gap-1 mt-1 text-[10px] text-white/70 font-medium">
                   <span>{fmtFollowers(org.followers)}</span>
                 </div>
 
                 {stat && (
                   <div className="mt-2 text-center">
-                    <div className="text-[10px] text-white/40">
+                    <div className="text-[10px] text-white/75 font-medium">
                       <Users className="w-3 h-3 inline mr-1" />
                       {stat.total_members} members
                     </div>
@@ -243,7 +243,7 @@ export function OrganizationsSection({ orgs, orgStats, orgMembers = [], onSelect
                         {stat.female_pct}% women
                       </div>
                     ) : (
-                      <div className="text-[10px] text-white/20">No women detected</div>
+                      <div className="text-[10px] text-white/60 font-medium">No women detected</div>
                     )}
                   </div>
                 )}

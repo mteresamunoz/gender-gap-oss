@@ -47,10 +47,10 @@ export function MethodologyNote() {
             className="inline-flex items-center gap-3 px-6 py-3 glass border border-white/10 rounded-full hover:border-coral/40 hover:bg-coral/5 transition-all group"
           >
             <Info className="w-4 h-4 text-coral group-hover:scale-110 transition-transform" />
-            <span className="text-sm text-white/70 group-hover:text-white transition-colors">
+            <span className="text-sm text-white/90 group-hover:text-white transition-colors font-medium">
               How we measure gender — and what that means
             </span>
-            <span className="text-xs text-coral/60 group-hover:text-coral transition-colors">
+            <span className="text-xs text-coral font-semibold group-hover:text-coral transition-colors">
               Read more
             </span>
           </button>
@@ -81,7 +81,7 @@ export function MethodologyNote() {
                 <h2 className="font-serif text-2xl md:text-3xl text-white mb-3">
                   A note on methodology
                 </h2>
-                <p className="text-white/50 text-sm max-w-lg mx-auto">
+                <p className="text-white/80 text-sm max-w-lg mx-auto font-medium">
                   Before you interpret these numbers, here is what they actually mean — and what they cannot mean.
                 </p>
               </div>
@@ -102,7 +102,7 @@ export function MethodologyNote() {
                       <h3 className="font-serif text-lg font-bold text-white mb-1">
                         {section.title}
                       </h3>
-                      <p className="text-white/60 text-sm leading-relaxed">
+                      <p className="text-white/85 text-sm leading-relaxed font-medium">
                         {section.text}
                       </p>
                     </div>
@@ -116,7 +116,7 @@ export function MethodologyNote() {
                 transition={{ delay: 0.8 }}
                 className="mt-10 pt-6 border-t border-white/10 text-center"
               >
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-white/70 font-medium">
                   Gender inference powered by{" "}
                   <a
                     href="https://github.com/lead-ratings/gender-guesser"

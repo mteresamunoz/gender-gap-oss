@@ -76,7 +76,7 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
             <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-2">
               Women in the top {totalAnalyzed}
             </h2>
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-white/85 font-medium">
               {women.length} {women.length === 1 ? "profile" : "profiles"} identified.{" "}
               <span className="text-coral">Click to pause & explore.</span>
             </p>
@@ -111,8 +111,8 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
               className={`
                 group relative flex-shrink-0 flex flex-col items-center
                 rounded-2xl p-5 min-w-[140px] md:min-w-[180px]
-                border border-coral/20 bg-coral/[0.03]
-                hover:border-coral/50 hover:bg-coral/[0.07]
+                border border-coral/30 bg-coral/[0.10]
+                hover:border-coral/60 hover:bg-coral/[0.15]
                 transition-all duration-300 cursor-pointer
                 ${selected?.login === user.login ? "ring-2 ring-coral scale-105" : ""}
               `}
@@ -135,15 +135,15 @@ export function WomenCarousel({ women, totalAnalyzed }: WomenCarouselProps) {
               </div>
 
               {/* Name */}
-              <span className="text-sm font-light text-foreground truncate max-w-[140px]">
+              <span className="text-sm font-medium text-foreground truncate max-w-[140px]">
                 {user.name || user.login}
               </span>
-              <span className="text-xs text-coral/80 truncate max-w-[140px]">
+              <span className="text-xs text-coral font-semibold truncate max-w-[140px]">
                 @{user.login}
               </span>
 
               {/* Stats */}
-              <div className="flex items-center gap-2 mt-2 text-[11px] text-white/40">
+              <div className="flex items-center gap-2 mt-2 text-[11px] text-white/80 font-medium">
                 <span>{fmtFollowers(user.followers)}</span>
                 {user.top_language && (
                   <>

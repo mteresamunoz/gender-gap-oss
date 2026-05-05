@@ -37,7 +37,7 @@ export function LanguageBreakdown({ data }: LanguageBreakdownProps) {
           <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
             Languages &amp; the gap
           </h2>
-          <p className="text-white/70 max-w-xl mx-auto">
+          <p className="text-white/90 max-w-xl mx-auto font-medium">
             Top programming languages among the most-followed GitHub profiles
             — and the representation of women within each.
           </p>

@@ -52,7 +52,7 @@ export function ComparisonSection({ github, huggingface }: ComparisonSectionProp
                   <span className="font-serif text-5xl md:text-6xl text-muted-foreground/40 font-bold">
                     —
                   </span>
-                  <span className="inline-block px-3 py-1 text-xs font-sans uppercase tracking-widest text-muted-foreground border border-white/10 rounded-full glass">
+                  <span className="inline-block px-3 py-1 text-xs font-sans uppercase tracking-widest text-white/90 border border-white/20 rounded-full glass font-semibold">
                     Coming soon
                   </span>
                   <p className="text-sm text-white/60 max-w-xs mx-auto">
@@ -71,7 +71,7 @@ export function ComparisonSection({ github, huggingface }: ComparisonSectionProp
                     />
                   </div>
 
-                  <p className="text-sm text-white/70 mb-8">{platform.description}</p>
+                  <p className="text-sm text-white/90 mb-8 font-medium">{platform.description}</p>
 
                   <div className="max-w-xs mx-auto">
                     <div className="h-3 bg-track rounded-full overflow-hidden">
@@ -90,7 +90,7 @@ export function ComparisonSection({ github, huggingface }: ComparisonSectionProp
                         }}
                       />
                     </div>
-                    <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                    <div className="flex justify-between mt-2 text-xs text-white/80 font-medium">
                       <span>0%</span>
                       <span>100%</span>
                     </div>
@@ -105,7 +105,7 @@ export function ComparisonSection({ github, huggingface }: ComparisonSectionProp
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center text-muted-foreground mt-16 max-w-2xl mx-auto"
+          className="text-center text-white/85 mt-16 max-w-2xl mx-auto font-medium"
         >
           {huggingface
             ? "Both platforms reveal a significant gender imbalance in the most-followed open source accounts."

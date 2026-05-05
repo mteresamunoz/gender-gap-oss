@@ -355,13 +355,13 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
               </div>
             </div>
           </div>
-          <p className="text-sm text-white/50 max-w-lg mx-auto">
+          <p className="text-sm text-white/85 max-w-lg mx-auto font-medium">
             Drag or swipe to rotate. Pinch or use the buttons to zoom.
             Click a country to explore.
             <span className="text-coral"> Coral</span> = has women · <span className="text-teal">Teal</span> = only men.
           </p>
           {!isPerCountryData ? (
-            <p className="text-xs text-white/30 max-w-lg mx-auto mt-2">
+            <p className="text-xs text-white/70 max-w-lg mx-auto mt-2 font-medium">
               Currently showing top 500 global users filtered by country. <span className="text-coral">Top 100 per country coming soon.</span>
             </p>
           ) : (
@@ -455,7 +455,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-2xl font-serif text-foreground">{selectedCountry}</h3>
-                        <p className="text-sm text-white/50 mt-1">
+                        <p className="text-sm text-white/80 mt-1 font-medium">
                           {total} users from {isPerCountryData ? 'top 100 in this country' : 'top 500 with location set'}
                         </p>
                       </div>
@@ -468,20 +468,20 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
                     <div className="grid grid-cols-3 gap-3 mb-6">
                       <div className="rounded-xl bg-coral/10 p-3 text-center">
                         <span className="block text-lg font-bold text-coral">{women}</span>
-                        <span className="text-[10px] text-coral/70">women ({womenPct}%)</span>
+                        <span className="text-[10px] text-coral font-semibold">women ({womenPct}%)</span>
                       </div>
                       <div className="rounded-xl bg-teal/10 p-3 text-center">
                         <span className="block text-lg font-bold text-teal">{men}</span>
-                        <span className="text-[10px] text-teal/70">men ({menPct}%)</span>
+                        <span className="text-[10px] text-teal font-semibold">men ({menPct}%)</span>
                       </div>
                       <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                         <span className="block text-lg font-bold text-foreground">{unclass}</span>
-                        <span className="text-[10px] text-white/40">unclassified</span>
+                        <span className="text-[10px] text-white/70 font-medium">unclassified</span>
                       </div>
                     </div>
 
                     {women === 0 ? (
-                      <div className="text-center py-8 text-white/40">
+                      <div className="text-center py-8 text-white/70">
                         <p className="text-lg mb-2">No women identified in this sample.</p>
                         <p className="text-sm">This does not mean there are none.</p>
                       </div>
@@ -508,7 +508,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
                                   <ExternalLink className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition shrink-0" />
                                 </div>
                                 <span className="text-xs text-coral">@{user.login}</span>
-                                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-white/40">
+                                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-white/75 font-medium">
                                   <span>{fmtFollowers(user.followers)} followers</span>
                                   {user.top_language && <><span>·</span><span>{user.top_language}</span></>}
                                 </div>
