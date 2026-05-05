@@ -406,20 +406,7 @@ export function WorldMapSection({ users, isPerCountryData = false }: WorldMapSec
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-6 mt-4 text-xs text-white/40">
-          <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,107,107,0.75)" }} />
-            Has women
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(75,191,160,0.70)" }} />
-            Only men
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255,255,255,0.12)" }} />
-            No data
-          </span>
-        </div>
+
       </div>
 
       {/* Country panel */}
