@@ -1,8 +1,7 @@
 import { ShaderWallpaper } from "@/components/shader-wallpaper"
 import { HeroSection } from "@/components/hero-section"
 import { ComparisonSection } from "@/components/comparison-section"
-import { TimelineSection } from "@/components/timeline-section"
-import { TimelineComingSoon } from "@/components/timeline-coming-soon"
+
 import { MethodologyNote } from "@/components/methodology-note"
 import { CategoryBreakdown } from "@/components/category-breakdown"
 import { LanguageBreakdown } from "@/components/language-breakdown"
@@ -17,8 +16,6 @@ import {
   getUsersWithCountry,
   getUsersByCountry,
   getOrgStats,
-  getTimelineByYear,
-  getContributorTimeline,
   getAllOrgMembers,
   getRepoStats,
   getRepoTimeline,
@@ -54,12 +51,6 @@ export default function HomePage() {
   }
   const classifiedCount = stats.female + stats.male
 
-  // Try real timeline data; fall back to account creation years if no contributor data yet
-  const contributorTimeline = getContributorTimeline()
-  const accountTimeline = getTimelineByYear()
-
-  const hasContributorData = contributorTimeline.length > 0
-
   return (
     <main className="min-h-screen relative overflow-x-hidden">
       <ShaderWallpaper />
@@ -83,14 +74,6 @@ export default function HomePage() {
       />
 
       <MethodologyNote />
-
-      {hasContributorData ? (
-        <TimelineSection data={contributorTimeline} variant="contributions" />
-      ) : accountTimeline.length > 0 ? (
-        <TimelineSection data={accountTimeline} variant="account_creation" />
-      ) : (
-        <TimelineComingSoon />
-      )}
 
       <CategoryBreakdown />
 
